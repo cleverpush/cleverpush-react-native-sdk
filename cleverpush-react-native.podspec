@@ -14,6 +14,6 @@ Pod::Spec.new do |s|
   s.source_files   = 'ios/RCTCleverPush/*.{h,m}'
 
   s.dependency 'React'
-  s.dependency 'CleverPush', '~> 0.1.6'
+  s.dependency 'CleverPush', '~> 0.1.7'
 
 end
