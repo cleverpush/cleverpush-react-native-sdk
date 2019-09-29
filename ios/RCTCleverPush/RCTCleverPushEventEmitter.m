@@ -152,6 +152,10 @@ RCT_EXPORT_METHOD(showTopicsDialog) {
     [CleverPush showTopicsDialog];
 }
 
+RCT_EXPORT_METHOD(showAppBanners) {
+    [CleverPush showAppBanners];
+}
+
 RCT_EXPORT_METHOD(getNotifications:(RCTResponseSenderBlock)callback) {
     NSArray* notifications = [CleverPush getNotifications];
     callback(@[[NSNull null], notifications]);

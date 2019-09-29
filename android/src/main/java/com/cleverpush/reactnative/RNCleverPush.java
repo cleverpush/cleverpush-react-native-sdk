@@ -277,6 +277,11 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
+    public void showAppBanners() {
+        this.cleverPush.showAppBanners();
+    }
+
+    @ReactMethod
     public void getNotifications(final Callback callback) {
         if (pendingGetNotificationsCallback == null)
             pendingGetNotificationsCallback = callback;
