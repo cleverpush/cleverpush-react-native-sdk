@@ -182,9 +182,9 @@ export default class CleverPush {
     return RNCleverPush.getNotifications(callback);
   }
 
-  static showAppBanners() {
+  static showAppBanners(callback) {
     if (!checkIfInitialized()) return;
 
-    RNCleverPush.showAppBanners();
+    RNCleverPush.showAppBanners(callback);
   }
 }

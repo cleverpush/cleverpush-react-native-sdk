@@ -152,8 +152,10 @@ RCT_EXPORT_METHOD(showTopicsDialog) {
     [CleverPush showTopicsDialog];
 }
 
-RCT_EXPORT_METHOD(showAppBanners) {
-    [CleverPush showAppBanners];
+RCT_EXPORT_METHOD(showAppBanners:(RCTResponseSenderBlock)callback) {
+    [CleverPush showAppBanners:(void(^)(NSString *))^(NSString *url){
+        callback(@[[NSNull null], url]);
+    }];
 }
 
 RCT_EXPORT_METHOD(getNotifications:(RCTResponseSenderBlock)callback) {

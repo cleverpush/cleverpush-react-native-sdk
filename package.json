@@ -1,6 +1,6 @@
 {
   "name": "cleverpush-react-native",
-  "version": "0.1.7",
+  "version": "0.1.16",
   "description": "CleverPush React Native SDK",
   "main": "index",
   "scripts": {
@@ -20,6 +20,6 @@
     "type": "git",
     "url": "https://github.com/cleverpush/cleverpush-react-native-sdk"
   },
-  "author": "CleverPush UG (haftungsbeschränkt)",
+  "author": "CleverPush GmbH",
   "license": "SEE LICENSE IN LICENSE"
 }

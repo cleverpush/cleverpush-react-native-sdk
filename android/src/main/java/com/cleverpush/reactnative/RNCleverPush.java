@@ -14,6 +14,7 @@ import com.cleverpush.CustomAttribute;
 import com.cleverpush.Notification;
 import com.cleverpush.Subscription;
 import com.cleverpush.listener.SubscribedListener;
+import com.cleverpush.listener.AppBannerUrlOpenedListener;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -50,6 +51,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     private Callback pendingGetSubscriptionAttributeCallback;
     private Callback pendingIsSubscribedCallback;
     private Callback pendingGetNotificationsCallback;
+    private Callback pendingShowAppBannersCallback;
 
     public RNCleverPush(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -277,8 +279,19 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
-    public void showAppBanners() {
-        this.cleverPush.showAppBanners();
+    public void showAppBanners(final Callback callback) {
+        if (pendingShowAppBannersCallback == null)
+            pendingShowAppBannersCallback = callback;
+
+        this.cleverPush.showAppBanners(new AppBannerUrlOpenedListener() {
+            @Override
+            public void opened(String url) {
+                if (pendingShowAppBannersCallback != null)
+                    pendingShowAppBannersCallback.invoke(null, url);
+
+                pendingShowAppBannersCallback = null;
+            }
+        });
     }
 
     @ReactMethod

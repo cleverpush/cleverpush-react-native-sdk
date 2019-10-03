@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         maven { url 'https://maven.google.com' }
+        mavenCentral()
         jcenter()
     }
     dependencies {
@@ -11,6 +12,7 @@ buildscript {
 allprojects {
     repositories {
         maven { url 'https://maven.google.com' }
+        mavenCentral()
         jcenter()
     }
 }
@@ -39,7 +41,7 @@ dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
 
-    implementation('com.cleverpush:cleverpush:+') {
+    implementation('com.cleverpush:cleverpush:0.1.8+') {
         exclude group: 'com.android.support'
     }
 }
