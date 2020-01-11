@@ -30,20 +30,20 @@ RCT_EXPORT_MODULE(RCTCleverPush)
 -(instancetype)init {
     if (self = [super init]) {
         NSLog(@"CleverPush: Initialized RCTCleverPushEventEmitter");
-        
+
         for (NSString *eventName in [self supportedEvents])
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(emitEvent:) name:eventName object:nil];
     }
-    
+
     return self;
 }
 
 -(void)startObserving {
     hasListeners = true;
     NSLog(@"CleverPush: RCTCleverPushEventEmitter did start observing");
-    
+
     [[NSNotificationCenter defaultCenter] postNotificationName:@"didSetBridge" object:nil];
-    
+
     _didStartObserving = true;
 }
 
@@ -54,10 +54,10 @@ RCT_EXPORT_MODULE(RCTCleverPush)
 
 -(NSArray<NSString *> *)supportedEvents {
     NSMutableArray *events = [NSMutableArray new];
-    
+
     for (int i = 0; i < CPNotificationEventTypesArray.count; i++)
         [events addObject:CPEventString(i)];
-    
+
     return events;
 }
 
@@ -66,7 +66,7 @@ RCT_EXPORT_MODULE(RCTCleverPush)
         NSLog(@"CleverPush: Attempted to send an event (%@) when no listeners were set.", notification.name);
         return;
     }
-    
+
     [self sendEventWithName:notification.name body:notification.userInfo];
 }
 
@@ -161,6 +161,10 @@ RCT_EXPORT_METHOD(showAppBanners:(RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(getNotifications:(RCTResponseSenderBlock)callback) {
     NSArray* notifications = [CleverPush getNotifications];
     callback(@[[NSNull null], notifications]);
+}
+
+RCT_EXPORT_METHOD(setAutoClearBadge:(BOOL)autoClear) {
+    [CleverPush setAutoClearBadge:autoClear];
 }
 
 @end

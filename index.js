@@ -187,4 +187,11 @@ export default class CleverPush {
 
     RNCleverPush.showAppBanners(callback);
   }
+
+  // iOS only
+  static setAutoClearBadge(callback) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.setAutoClearBadge(callback);
+  }
 }
