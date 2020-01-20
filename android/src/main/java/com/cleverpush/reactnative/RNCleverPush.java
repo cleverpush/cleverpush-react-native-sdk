@@ -374,7 +374,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     @Override
     public void onHostDestroy() {
-        this.cleverPush.removeNotificationOpenedListener();
+
     }
 
     @Override
