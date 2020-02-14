@@ -167,4 +167,10 @@ RCT_EXPORT_METHOD(setAutoClearBadge:(BOOL)autoClear) {
     [CleverPush setAutoClearBadge:autoClear];
 }
 
+RCT_EXPORT_METHOD(requestLocationPermission) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [CleverPush requestLocationPermission];
+    });
+}
+
 @end

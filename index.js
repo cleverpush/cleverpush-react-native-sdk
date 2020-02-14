@@ -188,6 +188,12 @@ export default class CleverPush {
     RNCleverPush.showAppBanners(callback);
   }
 
+  static requestLocationPermission() {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.requestLocationPermission();
+  }
+
   // iOS only
   static setAutoClearBadge(callback) {
     if (!checkIfInitialized()) return;

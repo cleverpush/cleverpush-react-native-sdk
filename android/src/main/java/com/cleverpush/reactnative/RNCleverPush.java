@@ -318,6 +318,11 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         pendingGetNotificationsCallback = null;
     }
 
+    @ReactMethod
+    public void requestLocationPermission() {
+        this.cleverPush.requestLocationPermission();
+    }
+
     private void registerNotificationsOpenedNotification() {
         IntentFilter intentFilter = new IntentFilter(NOTIFICATION_OPENED_INTENT_FILTER);
         mReactContext.registerReceiver(new BroadcastReceiver() {

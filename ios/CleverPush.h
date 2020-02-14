@@ -5,8 +5,10 @@
 #define XC8_AVAILABLE 1
 #import <UserNotifications/UserNotifications.h>
 #endif
+#import <CoreLocation/CoreLocation.h>
 
 #import "CPChatView.h"
+#import "CPNotificationViewController.h"
 
 @interface CPNotificationReceivedResult : NSObject
 
@@ -36,7 +38,7 @@ typedef void (^CPHandleNotificationOpenedBlock)(CPNotificationOpenedResult * res
 
 extern NSString * const kCPSettingsKeyInFocusDisplayOption;
 
-@interface CleverPush : NSObject
+@interface CleverPush : NSObject <CLLocationManagerDelegate>
 
 extern NSString * const CLEVERPUSH_SDK_VERSION;
 
@@ -64,6 +66,7 @@ extern NSString * const CLEVERPUSH_SDK_VERSION;
 + (void)subscribe;
 + (void)subscribe:(CPHandleSubscribedBlock)subscribedBlock;
 + (void)unsubscribe;
++ (void)syncSubscription;
 
 + (void)didRegisterForRemoteNotifications:(UIApplication*)app deviceToken:(NSData*)inDeviceToken;
 + (void)handleDidFailRegisterForRemoteNotification:(NSError*)err;
@@ -104,5 +107,8 @@ extern NSString * const CLEVERPUSH_SDK_VERSION;
 + (NSArray*)getNotifications;
 + (NSDictionary*)getChannelConfig;
 + (NSString*)getSubscriptionId;
++ (void)trackEvent:(NSString*)eventName;
++ (void)trackEvent:(NSString*)eventName amount:(NSNumber*)amount;
++ (void)requestLocationPermission;
 
 @end
