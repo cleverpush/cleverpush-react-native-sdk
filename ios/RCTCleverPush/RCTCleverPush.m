@@ -51,25 +51,38 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
+- (NSString*)stringifyNotificationReceivedResult:(CPNotificationReceivedResult*)result {
+    NSMutableDictionary* obj = [NSMutableDictionary new];
+    [obj setObject:result.notification forKeyedSubscript:@"notification"];
+    [obj setObject:result.subscription forKeyedSubscript:@"subscription"];
+
+    NSError * err;
+    NSData * jsonData = [NSJSONSerialization  dataWithJSONObject:obj options:0 error:&err];
+    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+}
+
 - (void)initCleverPush {
     NSLog(@"CleverPush: initCleverPush called");
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBeginObserving) name:@"didSetBridge" object:nil];
-    
-    [CleverPush initWithLaunchOptions:nil channelId:nil handleNotificationOpened:^(CPNotificationOpenedResult *result) {
+
+    [CleverPush initWithLaunchOptions:nil channelId:nil handleNotificationReceived:^(CPNotificationReceivedResult *result) {
+        if (RCTCleverPush.sharedInstance.didStartObserving) {
+           [self handleNotificationReceived:[self stringifyNotificationReceivedResult:result]];
+        }
+    } handleNotificationOpened:^(CPNotificationOpenedResult *result) {
         if (!RCTCleverPush.sharedInstance.didStartObserving) {
-          coldStartCPNotificationOpenedResult = result;
+           coldStartCPNotificationOpenedResult = result;
         } else {
            [self handleNotificationOpened:[self stringifyNotificationOpenedResult:result]];
         }
-        
     } autoRegister:NO];
     didInitialize = false;
 }
 
 - (void)didBeginObserving {
     RCTCleverPush.sharedInstance.didStartObserving = true;
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         if (coldStartCPNotificationOpenedResult) {
             [self handleNotificationOpened:[self stringifyNotificationOpenedResult:coldStartCPNotificationOpenedResult]];
@@ -81,24 +94,30 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
 - (void)init:(NSDictionary *)options {
     if (didInitialize)
         return;
-    
+
     NSLog(@"CleverPush: init with channelId called");
-    
+
     BOOL autoRegister = YES;
     NSString *channelId = [options objectForKey:@"channelId"];
     if ([[options objectForKey:@"autoRegister"] isKindOfClass:[NSNumber class]]) {
         autoRegister = [[options objectForKey:@"autoRegister"] boolValue];
     }
-    
+
     didInitialize = true;
-    [CleverPush initWithLaunchOptions:nil channelId:channelId handleNotificationOpened:^(CPNotificationOpenedResult *result) {
-        NSLog(@"CleverPush: init: handleNotificationOpened");
-        
-        if (!RCTCleverPush.sharedInstance.didStartObserving) {
-             coldStartCPNotificationOpenedResult = result;
-        } else {
-             [self handleNotificationOpened:[self stringifyNotificationOpenedResult:result]];
+    [CleverPush initWithLaunchOptions:nil channelId:channelId handleNotificationReceived:^(CPNotificationReceivedResult *result) {
+        NSLog(@"CleverPush: init: handleNotificationReceived");
+
+        if (RCTCleverPush.sharedInstance.didStartObserving) {
+             [self handleNotificationReceived:[self stringifyNotificationReceivedResult:result]];
         }
+    } handleNotificationOpened:^(CPNotificationOpenedResult *result) {
+      NSLog(@"CleverPush: init: handleNotificationOpened");
+
+      if (!RCTCleverPush.sharedInstance.didStartObserving) {
+           coldStartCPNotificationOpenedResult = result;
+      } else {
+           [self handleNotificationOpened:[self stringifyNotificationOpenedResult:result]];
+      }
     } handleSubscribed:^(NSString *result) {
         NSLog(@"CleverPush: init: handleSubscribed");
         [self handleSubscribed:result];
@@ -107,9 +126,17 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
 
 - (void)handleNotificationOpened:(NSString *)result {
     NSDictionary *json = [self jsonObjectWithString:result];
-    
+
     if (json) {
         [self sendEvent:CPEventString(NotificationOpened) withBody:json];
+    }
+}
+
+- (void)handleNotificationReceived:(NSString *)result {
+    NSDictionary *json = [self jsonObjectWithString:result];
+
+    if (json) {
+        [self sendEvent:CPEventString(NotificationReceived) withBody:json];
     }
 }
 
@@ -125,12 +152,12 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
     NSError *jsonError;
     NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
     NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
-    
+
     if (jsonError) {
         NSLog(@"CleverPush: Unable to serialize JSON string into an object: %@", jsonError);
         return nil;
     }
-    
+
     return json;
 }
 
