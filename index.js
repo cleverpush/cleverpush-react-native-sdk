@@ -4,13 +4,14 @@ import invariant from 'invariant';
 const RNCleverPush = NativeModules.CleverPush;
 
 const eventBroadcastNames = [
+  'CleverPush-notificationReceived',
   'CleverPush-notificationOpened',
   'CleverPush-subscribed'
 ];
 
 var CleverPushEventEmitter;
 
-var _eventNames = ['opened', 'subscribed'];
+var _eventNames = ['received', 'opened', 'subscribed'];
 
 var _notificationHandler = new Map();
 var _notificationCache = new Map();
@@ -50,8 +51,8 @@ export default class CleverPush {
     if (!checkIfInitialized()) return;
 
     invariant(
-      type === 'opened' || type === 'subscribed',
-      'CleverPush only supports `opened`, and `subscribed` events'
+      type === 'received' || type === 'opened' || type === 'subscribed',
+      'CleverPush only supports `received`, `opened`, and `subscribed` events'
     );
 
     _notificationHandler.set(type, handler);
@@ -67,8 +68,8 @@ export default class CleverPush {
     if (!checkIfInitialized()) return;
 
     invariant(
-      type === 'opened' || type === 'subscribed',
-      'CleverPush only supports `opened`, and `subscribed` events'
+      type === 'received' || type === 'opened' || type === 'subscribed',
+      'CleverPush only supports `received`, `opened`, and `subscribed` events'
     );
 
     _notificationHandler.delete(type);
