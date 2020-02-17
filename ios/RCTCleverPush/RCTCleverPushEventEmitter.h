@@ -13,6 +13,7 @@
 #endif
 
 typedef NS_ENUM(NSInteger, CPNotificationEventTypes) {
+    NotificationReceived,
     NotificationOpened,
     Subscribed
 };
