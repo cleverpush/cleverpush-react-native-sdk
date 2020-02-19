@@ -309,6 +309,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             writeableMap.putString("url", notification.getUrl());
             writeableMap.putString("iconUrl", notification.getIconUrl());
             writeableMap.putString("mediaUrl", notification.getMediaUrl());
+            writeableMap.putString("createdAt", notification.getCreatedAt());
             writableArray.pushMap(writeableMap);
         }
 
