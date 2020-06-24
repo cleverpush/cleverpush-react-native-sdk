@@ -28,7 +28,7 @@ android {
     buildToolsVersion safeExtGet('buildToolsVersion', '27.0.3')
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 15)
+        minSdkVersion safeExtGet('minSdkVersion', 17)
     }
     buildTypes {
         release {
@@ -41,7 +41,7 @@ dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
 
-    implementation('com.cleverpush:cleverpush:0.5.3+') {
+    implementation('com.cleverpush:cleverpush:1.1.0') {
         exclude group: 'com.android.support'
     }
 }
