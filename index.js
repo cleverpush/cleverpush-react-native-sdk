@@ -201,4 +201,11 @@ export default class CleverPush {
 
     RNCleverPush.setAutoClearBadge(callback);
   }
+
+  // iOS only
+  static setIncrementBadge(callback) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.setIncrementBadge(callback);
+  }
 }
