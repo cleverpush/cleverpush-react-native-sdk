@@ -196,16 +196,16 @@ export default class CleverPush {
   }
 
   // iOS only
-  static setAutoClearBadge(callback) {
+  static setAutoClearBadge(autoClear) {
     if (!checkIfInitialized()) return;
 
-    RNCleverPush.setAutoClearBadge(callback);
+    RNCleverPush.setAutoClearBadge(autoClear);
   }
 
   // iOS only
-  static setIncrementBadge(callback) {
+  static setIncrementBadge(increment) {
     if (!checkIfInitialized()) return;
 
-    RNCleverPush.setIncrementBadge(callback);
+    RNCleverPush.setIncrementBadge(increment);
   }
 }

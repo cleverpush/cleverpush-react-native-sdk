@@ -334,6 +334,16 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         }, intentFilter);
     }
 
+    @ReactMethod
+    public void setAutoClearBadge(boolean autoClear) {
+        this.cleverPush.setAutoClearBadge(autoClear);
+    }
+
+    @ReactMethod
+    public void setIncrementBadge(boolean increment) {
+        this.cleverPush.setIncrementBadge(increment);
+    }
+
     private void notifySubscribed(String subscriptionId) {
         try {
             WritableMap result = new WritableNativeMap();
