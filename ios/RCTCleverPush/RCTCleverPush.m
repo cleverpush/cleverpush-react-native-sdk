@@ -65,6 +65,8 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
     NSLog(@"CleverPush: initCleverPush called");
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBeginObserving) name:@"didSetBridge" object:nil];
+    
+    [CleverPush setAutoClearBadge:NO];
 
     [CleverPush initWithLaunchOptions:nil channelId:nil handleNotificationReceived:^(CPNotificationReceivedResult *result) {
         if (RCTCleverPush.sharedInstance.didStartObserving) {
@@ -77,6 +79,7 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
            [self handleNotificationOpened:[self stringifyNotificationOpenedResult:result]];
         }
     } autoRegister:NO];
+    
     didInitialize = false;
 }
 
@@ -92,8 +95,9 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
 }
 
 - (void)init:(NSDictionary *)options {
-    if (didInitialize)
+    if (didInitialize) {
         return;
+    }
 
     NSLog(@"CleverPush: init with channelId called");
 
@@ -104,6 +108,7 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
     }
 
     didInitialize = true;
+    
     [CleverPush initWithLaunchOptions:nil channelId:channelId handleNotificationReceived:^(CPNotificationReceivedResult *result) {
         NSLog(@"CleverPush: init: handleNotificationReceived");
 
