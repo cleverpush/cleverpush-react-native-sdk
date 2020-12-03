@@ -227,16 +227,25 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void addSubscriptionTag(String tagId) {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.addSubscriptionTag(tagId);
     }
 
     @ReactMethod
     public void removeSubscriptionTag(String tagId) {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.removeSubscriptionTag(tagId);
     }
 
     @ReactMethod
     public void removeSubscriptionTag(String attributeId, String value) {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.setSubscriptionAttribute(attributeId, value);
     }
 
@@ -255,26 +264,41 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void setSubscriptionLanguage(String language) {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.setSubscriptionLanguage(language);
     }
 
     @ReactMethod
     public void setSubscriptionCountry(String country) {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.setSubscriptionCountry(country);
     }
 
     @ReactMethod
     public void subscribe() {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.subscribe();
     }
 
     @ReactMethod
     public void unsubscribe() {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.unsubscribe();
     }
 
     @ReactMethod
     public void showTopicsDialog() {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.showTopicsDialog();
     }
 
@@ -321,6 +345,9 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void requestLocationPermission() {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.requestLocationPermission();
     }
 
@@ -336,11 +363,17 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void setAutoClearBadge(boolean autoClear) {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.setAutoClearBadge(autoClear);
     }
 
     @ReactMethod
     public void setIncrementBadge(boolean increment) {
+        if (this.cleverPush == null) {
+            return;
+        }
         this.cleverPush.setIncrementBadge(increment);
     }
 
