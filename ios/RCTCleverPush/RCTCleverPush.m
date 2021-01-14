@@ -79,6 +79,23 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
            [self handleNotificationOpened:[self stringifyNotificationOpenedResult:result]];
         }
     } autoRegister:NO];
+
+     [CleverPush setAppBannerOpenedCallback:^(CPAppBannerAction *action) {
+        NSMutableDictionary *result = [NSMutableDictionary new];
+        if (action.type != nil) {
+            [result setObject:action.type forKey:@"type"];
+        }
+        if (action.urlType != nil) {
+            [result setObject:action.urlType forKey:@"urlType"];
+        }
+        if (action.url != nil) {
+            [result setObject:action.url forKey:@"url"];
+        }
+        if (action.name != nil) {
+            [result setObject:action.name forKey:@"name"];
+        }
+        [self sendEvent:CPEventString(AppBannerOpened) withBody:result];
+    }];
     
     didInitialize = false;
 }

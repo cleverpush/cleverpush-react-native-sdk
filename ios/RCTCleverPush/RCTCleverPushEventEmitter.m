@@ -162,18 +162,6 @@ RCT_EXPORT_METHOD(showAppBanners:(RCTResponseSenderBlock)callback) {
     }];
 }
 
-RCT_EXPORT_METHOD(setAppBannerOpenedCallback:(RCTResponseSenderBlock)callback) {
-    [CleverPush setAppBannerOpenedCallback:^(CPAppBannerAction *action) {
-        NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
-        [result setObject:action.type forKey:@"type"];
-        [result setObject:action.urlType forKey:@"urlType"];
-        [result setObject:action.url forKey:@"url"];
-        [result setObject:action.name forKey:@"name"];
-
-        callback(@[[NSNull null], result]);
-    }];
-}
-
 RCT_EXPORT_METHOD(getNotifications:(RCTResponseSenderBlock)callback) {
     NSArray* notifications = [CleverPush getNotifications];
     callback(@[[NSNull null], notifications]);

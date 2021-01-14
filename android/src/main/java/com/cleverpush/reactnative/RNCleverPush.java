@@ -52,8 +52,6 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     private Callback pendingGetSubscriptionAttributeCallback;
     private Callback pendingIsSubscribedCallback;
     private Callback pendingGetNotificationsCallback;
-    private Callback pendingShowAppBannersCallback;
-    private Callback pendingSetAppBannerOpenedCallback;
 
     public RNCleverPush(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -124,6 +122,16 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             public void subscribed(String subscriptionId) {
                 notifySubscribed(subscriptionId);
             }
+        });
+
+        this.cleverPush.setAppBannerOpenedListener(action -> {
+            WritableMap result = new WritableNativeMap();
+            result.putString("type", action.getType());
+            result.putString("name", action.getName());
+            result.putString("url", action.getUrl());
+            result.putString("urlType", action.getUrlType());
+
+            sendEvent("CleverPush-appBannerOpened", result);
         });
     }
 
@@ -325,25 +333,6 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
                 pendingShowAppBannersCallback = null;
             }
-        });
-    }
-
-    @ReactMethod
-    public void setAppBannerOpenedCallback(final Callback callback) {
-        if (pendingSetAppBannerOpenedCallback == null)
-            pendingSetAppBannerOpenedCallback = callback;
-
-        this.cleverPush..setAppBannerOpenedListener(action -> {
-            if (pendingSetAppBannerOpenedCallback != null)
-                WritableMap result = new WritableNativeMap();
-                result.putString("type", action.getType());
-                result.putString("name", action.getName());
-                result.putString("url", action.getUrl());
-                result.putString("urlType", action.getUrlType());
-
-                pendingSetAppBannerOpenedCallback.invoke(null, result);
-
-                pendingSetAppBannerOpenedCallback = null;
         });
     }
 
