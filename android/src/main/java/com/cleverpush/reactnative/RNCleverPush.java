@@ -305,6 +305,14 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
+    public void enableDevelopmentMode() {
+        if (this.cleverPush == null) {
+            return;
+        }
+        this.cleverPush.enableDevelopmentMode();
+    }
+
+    @ReactMethod
     public void showAppBanners(final Callback callback) {
         if (pendingShowAppBannersCallback == null)
             pendingShowAppBannersCallback = callback;
@@ -330,7 +338,6 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
                 WritableMap result = new WritableNativeMap();
                 result.putString("type", action.getType());
                 result.putString("name", action.getName());
-                result.putString("dismiss", action.getDismiss());
                 result.putString("url", action.getUrl());
                 result.putString("urlType", action.getUrlType());
 

@@ -152,6 +152,10 @@ RCT_EXPORT_METHOD(showTopicsDialog) {
     [CleverPush showTopicsDialog];
 }
 
+RCT_EXPORT_METHOD(enableDevelopmentMode) {
+    [CleverPush enableDevelopmentMode];
+}
+
 RCT_EXPORT_METHOD(showAppBanners:(RCTResponseSenderBlock)callback) {
     [CleverPush showAppBanners:(void(^)(NSString *))^(NSString *url){
         callback(@[[NSNull null], url]);
@@ -162,7 +166,6 @@ RCT_EXPORT_METHOD(setAppBannerOpenedCallback:(RCTResponseSenderBlock)callback) {
     [CleverPush setAppBannerOpenedCallback:(void(^)(CPAppBannerAction *))^(CPAppBannerAction *action){
         NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
         [result setObject:action.type forKey:@"type"];
-        [result setObject:action.dismiss forKey:@"dismiss"];
         [result setObject:action.urlType forKey:@"urlType"];
         [result setObject:action.url forKey:@"url"];
         [result setObject:action.name forKey:@"name"];
