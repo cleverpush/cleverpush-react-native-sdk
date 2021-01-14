@@ -163,7 +163,7 @@ RCT_EXPORT_METHOD(showAppBanners:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(setAppBannerOpenedCallback:(RCTResponseSenderBlock)callback) {
-    [CleverPush setAppBannerOpenedCallback:(void(^)(CPAppBannerAction *))^(CPAppBannerAction *action){
+    [CleverPush setAppBannerOpenedCallback:^(CPAppBannerAction *action) {
         NSMutableDictionary *result = [[NSMutableDictionary alloc] init];
         [result setObject:action.type forKey:@"type"];
         [result setObject:action.urlType forKey:@"urlType"];
