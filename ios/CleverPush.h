@@ -10,6 +10,8 @@
 
 #import "CPChatView.h"
 #import "CPNotificationViewController.h"
+#import "CleverPushHTTPClient.h"
+#import "CPAppBannerAction.h"
 
 @interface CPNotificationReceivedResult : NSObject
 
@@ -41,6 +43,8 @@ typedef void (^CPHandleNotificationOpenedBlock)(CPNotificationOpenedResult * res
 typedef void (^CPResultSuccessBlock)(NSDictionary* result);
 typedef void (^CPFailureBlock)(NSError* error);
 
+typedef void (^CPAppBannerActionBlock)(CPAppBannerAction* action);
+
 extern NSString * const kCPSettingsKeyInFocusDisplayOption;
 
 @interface CleverPush : NSObject
@@ -69,6 +73,7 @@ extern NSString * const CLEVERPUSH_SDK_VERSION;
 + (void)setTrackingConsent:(BOOL)consent;
 
 + (void)enableDevelopmentMode;
++ (BOOL)isDevelopmentModeEnabled;
 
 + (NSString*)channelId;
 
@@ -121,8 +126,6 @@ extern NSString * const CLEVERPUSH_SDK_VERSION;
 + (void)addChatView:(CPChatView*)chatView;
 + (void)showTopicsDialog;
 + (void)showTopicsDialog:(UIWindow *)targetWindow;
-+ (void)showAppBanners;
-+ (void)showAppBanners:(void(^)(NSString *))urlOpenedCallback;
 + (void)reLayoutAppBanner;
 + (NSArray*)getNotifications;
 + (void)getChannelConfig:(void(^)(NSDictionary *))callback;
@@ -134,5 +137,16 @@ extern NSString * const CLEVERPUSH_SDK_VERSION;
 + (void)trackPageView:(NSString*)url;
 + (void)trackPageView:(NSString*)url params:(NSDictionary*)params;
 + (void)increaseSessionVisits;
+
++ (void)showAppBanners __attribute__((deprecated));
++ (void)showAppBanners:(void(^)(NSString *))urlOpenedCallback __attribute__((deprecated));
++ (void)showAppBanner:(NSString*)bannerId;
++ (void)setAppBannerOpenedCallback:(CPAppBannerActionBlock)callback;
++ (void)triggerAppBannerEvent:(NSString *)key value:(NSString *)value;
+
++ (void)setApiEndpoint:(NSString*)apiEndpoint;
++ (NSString*)getApiEndpoint;
+
++ (void)updateBadge:(UNMutableNotificationContent*)replacementContent;
 
 @end
