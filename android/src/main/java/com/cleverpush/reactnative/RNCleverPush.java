@@ -15,6 +15,7 @@ import com.cleverpush.Notification;
 import com.cleverpush.Subscription;
 import com.cleverpush.listener.SubscribedListener;
 import com.cleverpush.listener.AppBannerUrlOpenedListener;
+import com.cleverpush.listener.AppBannerOpenedListener;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -52,6 +53,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     private Callback pendingIsSubscribedCallback;
     private Callback pendingGetNotificationsCallback;
     private Callback pendingShowAppBannersCallback;
+    private Callback pendingSetAppBannerOpenedCallback;
 
     public RNCleverPush(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -315,6 +317,26 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
                 pendingShowAppBannersCallback = null;
             }
+        });
+    }
+
+    @ReactMethod
+    public void setAppBannerOpenedCallback(final Callback callback) {
+        if (pendingSetAppBannerOpenedCallback == null)
+            pendingSetAppBannerOpenedCallback = callback;
+
+        this.cleverPush..setAppBannerOpenedListener(action -> {
+            if (pendingSetAppBannerOpenedCallback != null)
+                WritableMap result = new WritableNativeMap();
+                result.putString("type", action.getType());
+                result.putString("name", action.getName());
+                result.putString("dismiss", action.getDismiss());
+                result.putString("url", action.getUrl());
+                result.putString("urlType", action.getUrlType());
+
+                pendingSetAppBannerOpenedCallback.invoke(null, result);
+
+                pendingSetAppBannerOpenedCallback = null;
         });
     }
 

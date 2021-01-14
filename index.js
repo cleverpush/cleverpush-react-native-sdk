@@ -189,6 +189,12 @@ export default class CleverPush {
     RNCleverPush.showAppBanners(callback);
   }
 
+  static setAppBannerOpenedCallback(callback) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.setAppBannerOpenedCallback(callback);
+  }
+
   static requestLocationPermission() {
     if (!checkIfInitialized()) return;
 
