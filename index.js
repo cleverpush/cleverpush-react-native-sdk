@@ -177,6 +177,12 @@ export default class CleverPush {
     RNCleverPush.showTopicsDialog();
   }
 
+  static enableDevelopmentMode() {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.enableDevelopmentMode();
+  }
+
   static getNotifications(callback) {
     if (!checkIfInitialized()) return;
 
