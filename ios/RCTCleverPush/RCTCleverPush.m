@@ -68,6 +68,7 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
     
     [CleverPush setAutoClearBadge:NO];
 
+    /*
     [CleverPush initWithLaunchOptions:nil channelId:nil handleNotificationReceived:^(CPNotificationReceivedResult *result) {
         if (RCTCleverPush.sharedInstance.didStartObserving) {
            [self handleNotificationReceived:[self stringifyNotificationReceivedResult:result]];
@@ -79,23 +80,7 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
            [self handleNotificationOpened:[self stringifyNotificationOpenedResult:result]];
         }
     } autoRegister:NO];
-
-     [CleverPush setAppBannerOpenedCallback:^(CPAppBannerAction *action) {
-        NSMutableDictionary *result = [NSMutableDictionary new];
-        if (action.type != nil) {
-            [result setObject:action.type forKey:@"type"];
-        }
-        if (action.urlType != nil) {
-            [result setObject:action.urlType forKey:@"urlType"];
-        }
-        if (action.url != nil) {
-            [result setObject:action.url forKey:@"url"];
-        }
-        if (action.name != nil) {
-            [result setObject:action.name forKey:@"name"];
-        }
-        [self sendEvent:CPEventString(AppBannerOpened) withBody:result];
-    }];
+    */
     
     didInitialize = false;
 }
@@ -144,6 +129,23 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
         NSLog(@"CleverPush: init: handleSubscribed");
         [self handleSubscribed:result];
     } autoRegister:autoRegister];
+
+    [CleverPush setAppBannerOpenedCallback:^(CPAppBannerAction *action) {
+        NSMutableDictionary *result = [NSMutableDictionary new];
+        if (action.type != nil) {
+            [result setObject:action.type forKey:@"type"];
+        }
+        if (action.urlType != nil) {
+            [result setObject:action.urlType forKey:@"urlType"];
+        }
+        if (action.url != nil) {
+            [result setObject:action.url forKey:@"url"];
+        }
+        if (action.name != nil) {
+            [result setObject:action.name forKey:@"name"];
+        }
+        [self sendEvent:CPEventString(AppBannerOpened) withBody:result];
+    }];
 }
 
 - (void)handleNotificationOpened:(NSString *)result {
