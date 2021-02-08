@@ -16,6 +16,7 @@ import com.cleverpush.Subscription;
 import com.cleverpush.listener.SubscribedListener;
 import com.cleverpush.listener.AppBannerUrlOpenedListener;
 import com.cleverpush.listener.AppBannerOpenedListener;
+import com.cleverpush.banner.models.BannerAction;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -124,14 +125,17 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             }
         });
 
-        this.cleverPush.setAppBannerOpenedListener(action -> {
-            WritableMap result = new WritableNativeMap();
-            result.putString("type", action.getType());
-            result.putString("name", action.getName());
-            result.putString("url", action.getUrl());
-            result.putString("urlType", action.getUrlType());
+        this.cleverPush.setAppBannerOpenedListener(new AppBannerOpenedListener() {
+           @Override
+           public void opened(BannerAction action) {
+                WritableMap result = new WritableNativeMap();
+                result.putString("type", action.getType());
+                result.putString("name", action.getName());
+                result.putString("url", action.getUrl());
+                result.putString("urlType", action.getUrlType());
 
-            sendEvent("CleverPush-appBannerOpened", result);
+                sendEvent("CleverPush-appBannerOpened", result);
+            }
         });
     }
 
