@@ -326,18 +326,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void showAppBanners(final Callback callback) {
-        if (pendingShowAppBannersCallback == null)
-            pendingShowAppBannersCallback = callback;
-
-        this.cleverPush.showAppBanners(new AppBannerUrlOpenedListener() {
-            @Override
-            public void opened(String url) {
-                if (pendingShowAppBannersCallback != null)
-                    pendingShowAppBannersCallback.invoke(null, url);
-
-                pendingShowAppBannersCallback = null;
-            }
-        });
+       // Deprecated
     }
 
     @ReactMethod
