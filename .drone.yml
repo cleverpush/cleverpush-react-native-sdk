@@ -4,15 +4,13 @@ name: default
 
 steps:
 - name: deploy
-  image: plugin/npm
+  image: plugins/npm
   pull: if-not-exists
   settings:
-    username:
-      from_secret: NPM_USERNAME
-    password:
-      from_secret: NPM_PASSWORD
-    email:
-      from_secret: NPM_EMAIL
+    username: overwrite
+    password: overwrite
+    token:
+      from_secret: NPM_TOKEN
   when:
     branch:
     - CP-1965_ci-deployment
