@@ -1,0 +1,16 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: deploy
+  image: plugins/npm
+  pull: if-not-exists
+  settings:
+    username: overwrite
+    password: overwrite
+    token:
+      from_secret: NPM_TOKEN
+  when:
+    event:
+    - tag
