@@ -12,5 +12,5 @@ steps:
     token:
       from_secret: NPM_TOKEN
   when:
-    branch:
-    - CP-1965_ci-deployment
+    event:
+    - tag
