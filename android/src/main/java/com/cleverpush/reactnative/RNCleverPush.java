@@ -14,7 +14,6 @@ import com.cleverpush.CustomAttribute;
 import com.cleverpush.Notification;
 import com.cleverpush.Subscription;
 import com.cleverpush.listener.SubscribedListener;
-import com.cleverpush.listener.AppBannerUrlOpenedListener;
 import com.cleverpush.listener.AppBannerOpenedListener;
 import com.cleverpush.banner.models.BannerAction;
 import com.facebook.react.bridge.Callback;
@@ -24,6 +23,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
@@ -33,6 +33,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -174,10 +175,10 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         if (pendingGetSubscriptionAttributesCallback == null)
             pendingGetSubscriptionAttributesCallback = callback;
 
-        Map<String, String> attributes = this.cleverPush.getSubscriptionAttributes();
+        Map<String, Object> attributes = this.cleverPush.getSubscriptionAttributes();
         WritableMap writableMap = new WritableNativeMap();
-        for (Map.Entry<String, String> attribute : attributes.entrySet()) {
-            writableMap.putString(attribute.getKey(), attribute.getValue());
+        for (Map.Entry<String, Object> attribute : attributes.entrySet()) {
+            writableMap.putString(attribute.getKey(), attribute.getValue().toString());
         }
 
         if (pendingGetSubscriptionAttributesCallback != null)
@@ -191,7 +192,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         if (pendingGetSubscriptionAttributeCallback == null)
             pendingGetSubscriptionAttributeCallback = callback;
 
-        String value = this.cleverPush.getSubscriptionAttribute(attributeId);
+        Object value = this.cleverPush.getSubscriptionAttribute(attributeId);
 
         if (pendingGetSubscriptionAttributeCallback != null)
             pendingGetSubscriptionAttributeCallback.invoke(value);
@@ -386,6 +387,25 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             return;
         }
         this.cleverPush.setIncrementBadge(increment);
+    }
+
+    @ReactMethod
+    public void trackPageView(String url, ReadableMap params) {
+        if (this.cleverPush == null) {
+            return;
+        }
+
+        if (params != null) {
+            HashMap<String, String> paramsMap = new HashMap<>();
+            ReadableMapKeySetIterator iterator = params.keySetIterator();
+            while (iterator.hasNextKey()) {
+                String paramKey = iterator.nextKey();
+                paramsMap.put(paramKey, params.getString(paramKey));
+            }
+          this.cleverPush.trackPageView(url, paramsMap);
+        } else {
+          this.cleverPush.trackPageView(url);
+        }
     }
 
     private void notifySubscribed(String subscriptionId) {

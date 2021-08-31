@@ -156,12 +156,6 @@ RCT_EXPORT_METHOD(enableDevelopmentMode) {
     [CleverPush enableDevelopmentMode];
 }
 
-RCT_EXPORT_METHOD(showAppBanners:(RCTResponseSenderBlock)callback) {
-    [CleverPush showAppBanners:(void(^)(NSString *))^(NSString *url){
-        callback(@[[NSNull null], url]);
-    }];
-}
-
 RCT_EXPORT_METHOD(getNotifications:(RCTResponseSenderBlock)callback) {
     NSArray* notifications = [CleverPush getNotifications];
     callback(@[[NSNull null], notifications]);
@@ -177,6 +171,14 @@ RCT_EXPORT_METHOD(setAutoClearBadge:(BOOL)autoClear) {
 
 RCT_EXPORT_METHOD(setIncrementBadge:(BOOL)increment) {
     [CleverPush setIncrementBadge:increment];
+}
+
+RCT_EXPORT_METHOD(trackPageView:(NSString*)url params:(NSDictionary*)params) {
+    if (params != nil) {
+        [CleverPush trackPageView:url];
+    } else {
+        [CleverPush trackPageView:url params:params];
+    }
 }
 
 @end
