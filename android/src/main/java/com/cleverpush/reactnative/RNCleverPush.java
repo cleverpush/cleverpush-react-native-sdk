@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.cleverpush.ActivityLifecycleListener;
 import com.cleverpush.ChannelTag;
 import com.cleverpush.CleverPush;
 import com.cleverpush.CustomAttribute;
@@ -465,5 +466,11 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     @Override
     public void onHostResume() {
         initCleverPush();
+        Context context = getCurrentActivity();
+        if (context == null) {
+            context = mReactApplicationContext.getApplicationContext();
+        }
+        this.cleverPush = CleverPush.getInstance(context);
+        ActivityLifecycleListener.currentActivity = getCurrentActivity();
     }
 }
