@@ -13,6 +13,8 @@
 #import "RCTCleverPush.h"
 #import "RCTCleverPushEventEmitter.h"
 
+#import <objc/runtime.h>
+
 #if __IPHONE_CP_VERSION_MIN_REQUIRED < __IPHONE_8_0
 
 #define UIUserNotificationTypeAlert UIRemoteNotificationTypeAlert
@@ -41,10 +43,34 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
     return _sharedInstance;
 }
 
+- (NSDictionary *) dictionaryWithPropertiesOfObject:(id)obj {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    
+    unsigned count;
+    objc_property_t *properties = class_copyPropertyList([obj class], &count);
+    
+    for (int i = 0; i < count; i++) {
+        NSString *key = [NSString stringWithUTF8String:property_getName(properties[i])];
+        if ([obj valueForKey:key] != nil) {
+            if ([[obj valueForKey:key] isKindOfClass:[NSDate class]]) {
+                NSString *convertedDateString = [NSString stringWithFormat:@"%@", [obj valueForKey:key]];
+                [dict setObject:convertedDateString forKey:key];
+            } else {
+                [dict setObject:[obj valueForKey:key] forKey:key];
+            }
+        }
+    }
+    free(properties);
+    return [NSDictionary dictionaryWithDictionary:dict];
+}
+
 - (NSString*)stringifyNotificationOpenedResult:(CPNotificationOpenedResult*)result {
+    NSDictionary *notificationDictionary = [self dictionaryWithPropertiesOfObject:result.notification];
+    NSDictionary *subscriptionDictionary = [self dictionaryWithPropertiesOfObject:result.subscription];
+
     NSMutableDictionary* obj = [NSMutableDictionary new];
-    [obj setObject:result.notification forKeyedSubscript:@"notification"];
-    [obj setObject:result.subscription forKeyedSubscript:@"subscription"];
+    [obj setObject:notificationDictionary forKeyedSubscript:@"notification"];
+    [obj setObject:subscriptionDictionary forKeyedSubscript:@"subscription"];
 
     NSError * err;
     NSData * jsonData = [NSJSONSerialization  dataWithJSONObject:obj options:0 error:&err];
@@ -52,9 +78,12 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
 }
 
 - (NSString*)stringifyNotificationReceivedResult:(CPNotificationReceivedResult*)result {
+    NSDictionary *notificationDictionary = [self dictionaryWithPropertiesOfObject:result.notification];
+    NSDictionary *subscriptionDictionary = [self dictionaryWithPropertiesOfObject:result.subscription];
+
     NSMutableDictionary* obj = [NSMutableDictionary new];
-    [obj setObject:result.notification forKeyedSubscript:@"notification"];
-    [obj setObject:result.subscription forKeyedSubscript:@"subscription"];
+    [obj setObject:notificationDictionary forKeyedSubscript:@"notification"];
+    [obj setObject:subscriptionDictionary forKeyedSubscript:@"subscription"];
 
     NSError * err;
     NSData * jsonData = [NSJSONSerialization  dataWithJSONObject:obj options:0 error:&err];
@@ -68,20 +97,6 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
     
     [CleverPush setAutoClearBadge:NO];
 
-    /*
-    [CleverPush initWithLaunchOptions:nil channelId:nil handleNotificationReceived:^(CPNotificationReceivedResult *result) {
-        if (RCTCleverPush.sharedInstance.didStartObserving) {
-           [self handleNotificationReceived:[self stringifyNotificationReceivedResult:result]];
-        }
-    } handleNotificationOpened:^(CPNotificationOpenedResult *result) {
-        if (!RCTCleverPush.sharedInstance.didStartObserving) {
-           coldStartCPNotificationOpenedResult = result;
-        } else {
-           [self handleNotificationOpened:[self stringifyNotificationOpenedResult:result]];
-        }
-    } autoRegister:NO];
-    */
-    
     didInitialize = false;
 }
 
