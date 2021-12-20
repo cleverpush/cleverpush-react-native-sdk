@@ -130,15 +130,15 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
         NSLog(@"CleverPush: init: handleNotificationReceived");
 
         if (RCTCleverPush.sharedInstance.didStartObserving) {
-             [self handleNotificationReceived:[self stringifyNotificationReceivedResult:result]];
+            [self handleNotificationReceived:[self stringifyNotificationReceivedResult:result]];
         }
     } handleNotificationOpened:^(CPNotificationOpenedResult *result) {
       NSLog(@"CleverPush: init: handleNotificationOpened");
 
       if (!RCTCleverPush.sharedInstance.didStartObserving) {
-           coldStartCPNotificationOpenedResult = result;
+          coldStartCPNotificationOpenedResult = result;
       } else {
-           [self handleNotificationOpened:[self stringifyNotificationOpenedResult:result]];
+          [self handleNotificationOpened:[self stringifyNotificationOpenedResult:result]];
       }
     } handleSubscribed:^(NSString *result) {
         NSLog(@"CleverPush: init: handleSubscribed");

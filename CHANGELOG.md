@@ -1,3 +1,6 @@
+## 1.4.4
+* Updated to latest Android & iOS SDKs
+
 ## 1.4.3
 * Android: Updated native SDK to latest version to reflect latest Android 12 changes
 
