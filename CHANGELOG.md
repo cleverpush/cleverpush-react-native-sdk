@@ -1,3 +1,6 @@
+## 1.4.6
+* Fixed setSubscriptionAttribute on Android
+
 ## 1.4.5
 * Updated to latest iOS SDK
 

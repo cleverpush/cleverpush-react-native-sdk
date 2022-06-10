@@ -258,7 +258,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
-    public void removeSubscriptionTag(String attributeId, String value) {
+    public void setSubscriptionAttribute(String attributeId, String value) {
         if (this.cleverPush == null) {
             return;
         }
