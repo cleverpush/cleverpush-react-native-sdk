@@ -6,7 +6,7 @@
 
 @interface RCTCleverPush : NSObject
 
-+ (RCTCleverPush *) sharedInstance;
++ (RCTCleverPush *)sharedInstance;
 
 @property (nonatomic) BOOL didStartObserving;
 

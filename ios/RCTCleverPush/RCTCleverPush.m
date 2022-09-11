@@ -34,7 +34,9 @@
 
 CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
 
-+ (RCTCleverPush *) sharedInstance {
+NSDictionary* pendingLaunchOptions;
+
++ (RCTCleverPush *)sharedInstance {
     static dispatch_once_t token = 0;
     static id _sharedInstance = nil;
     dispatch_once(&token, ^{
@@ -43,7 +45,7 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
     return _sharedInstance;
 }
 
-- (NSDictionary *) dictionaryWithPropertiesOfObject:(id)obj {
+- (NSDictionary *)dictionaryWithPropertiesOfObject:(id)obj {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     
     unsigned count;
@@ -90,8 +92,10 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
     return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
-- (void)initCleverPush {
+- (void)initCleverPush:(NSDictionary*)launchOptions {
     NSLog(@"CleverPush: initCleverPush called");
+
+    pendingLaunchOptions = launchOptions;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBeginObserving) name:@"didSetBridge" object:nil];
     
@@ -126,7 +130,7 @@ CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
 
     didInitialize = true;
     
-    [CleverPush initWithLaunchOptions:nil channelId:channelId handleNotificationReceived:^(CPNotificationReceivedResult *result) {
+    [CleverPush initWithLaunchOptions:pendingLaunchOptions channelId:channelId handleNotificationReceived:^(CPNotificationReceivedResult *result) {
         NSLog(@"CleverPush: init: handleNotificationReceived");
 
         if (RCTCleverPush.sharedInstance.didStartObserving) {

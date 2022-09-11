@@ -2,8 +2,8 @@
 #import <objc/runtime.h>
 
 @interface RCTCleverPush
-+ (RCTCleverPush *) sharedInstance;
-- (void)initCleverPush;
++ (RCTCleverPush *)sharedInstance;
+- (void)initCleverPush:(NSDictionary*)launchOptions;
 @end
 
 @implementation UIApplication(CleverPushReactNative)
@@ -43,7 +43,7 @@ static void injectSelector(Class newClass, SEL newSel, Class addToClass, SEL mak
 }
 
 - (BOOL)cleverPushApplication:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions {
-    [RCTCleverPush.sharedInstance initCleverPush];
+    [RCTCleverPush.sharedInstance initCleverPush:launchOptions];
     
     if ([self respondsToSelector:@selector(cleverPushApplication:didFinishLaunchingWithOptions:)])
         return [self cleverPushApplication:application didFinishLaunchingWithOptions:launchOptions];
