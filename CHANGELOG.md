@@ -1,3 +1,6 @@
+## 1.4.8
+* Updated to latest iOS SDK
+
 ## 1.4.7
 * Fixed Notification Opened handler for iOS when application was not open in the background
 
