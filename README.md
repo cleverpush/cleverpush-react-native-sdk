@@ -2,4 +2,4 @@
 
 ## Documentation
 
-https://developers.cleverpush.com/sdks/react-native/
+https://developers.cleverpush.com
