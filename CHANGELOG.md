@@ -1,3 +1,6 @@
+## 1.4.9
+* Updated to latest iOS SDK
+
 ## 1.4.8
 * Updated to latest iOS SDK
 
