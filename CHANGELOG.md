@@ -1,3 +1,6 @@
+## 1.4.11
+* Updated to latest iOS + Android SDKs
+
 ## 1.4.10
 * Updated to latest Android SDK
 

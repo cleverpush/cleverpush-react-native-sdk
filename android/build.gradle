@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0'
+        classpath 'com.android.tools.build:gradle:7.3.0'
     }
 }
 
@@ -24,11 +24,10 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-    compileSdkVersion safeExtGet('compileSdkVersion', 27)
-    buildToolsVersion safeExtGet('buildToolsVersion', '27.0.3')
+    compileSdkVersion safeExtGet('compileSdkVersion', 33)
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 17)
+        minSdkVersion safeExtGet('minSdkVersion', 19)
     }
     buildTypes {
         release {
@@ -41,7 +40,7 @@ dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
 
-    implementation('com.cleverpush:cleverpush:1.27.5') {
+    implementation('com.cleverpush:cleverpush:1.29.4') {
         exclude group: 'com.android.support'
     }
 }
