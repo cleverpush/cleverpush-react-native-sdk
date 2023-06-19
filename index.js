@@ -94,6 +94,12 @@ export default class CleverPush {
     RNCleverPush.getAvailableTags(callback);
   }
 
+  static getAvailableTopics(callback) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.getAvailableTopics(callback);
+  }
+
   static getAvailableAttributes(callback) {
     if (!checkIfInitialized()) return;
 
@@ -122,6 +128,30 @@ export default class CleverPush {
     if (!checkIfInitialized()) return;
 
     RNCleverPush.hasSubscriptionTag(tagId, callback);
+  }
+
+  static getSubscriptionTopics(callback) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.getSubscriptionTopics(callback);
+  }
+
+  static setSubscriptionTopics(topicIds) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.setSubscriptionTopics(topicIds);
+  }
+
+  static addSubscriptionTopic(topicId) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.addSubscriptionTopic(topicId);
+  }
+
+  static removeSubscriptionTopic(topicId) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.removeSubscriptionTopic(topicId);
   }
 
   static getSubscriptionAttributes(callback) {

@@ -1,3 +1,8 @@
+## 1.5.0
+* Updated to latest iOS + Android SDKs
+* Implemented new topic-related methods
+* Fixed callback arguments for some Android methods
+
 ## 1.4.11
 * Updated to latest iOS + Android SDKs
 

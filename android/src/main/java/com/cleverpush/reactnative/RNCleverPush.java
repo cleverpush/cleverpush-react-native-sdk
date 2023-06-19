@@ -7,22 +7,21 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.cleverpush.ActivityLifecycleListener;
 import com.cleverpush.ChannelTag;
+import com.cleverpush.ChannelTopic;
 import com.cleverpush.CleverPush;
 import com.cleverpush.CustomAttribute;
 import com.cleverpush.Notification;
 import com.cleverpush.Subscription;
 import com.cleverpush.listener.SubscribedListener;
-import com.cleverpush.listener.AppBannerOpenedListener;
-import com.cleverpush.banner.models.BannerAction;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableArray;
@@ -30,13 +29,11 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class RNCleverPush extends ReactContextBaseJavaModule implements LifecycleEventListener {
     public static final String NOTIFICATION_OPENED_INTENT_FILTER = "CPNotificationOpened";
@@ -46,15 +43,6 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     private ReactContext mReactContext;
     private boolean cleverPushInitDone;
     private boolean registeredEvents = false;
-
-    private Callback pendingGetAvailableTagsCallback;
-    private Callback pendingGetAvailableAttributesCallback;
-    private Callback pendingGetSubscriptionTagsCallback;
-    private Callback pendingGetSubscriptionAttributesCallback;
-    private Callback pendingHasSubscriptionTagCallback;
-    private Callback pendingGetSubscriptionAttributeCallback;
-    private Callback pendingIsSubscribedCallback;
-    private Callback pendingGetNotificationsCallback;
 
     public RNCleverPush(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -127,118 +115,123 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             }
         });
 
-        this.cleverPush.setAppBannerOpenedListener(new AppBannerOpenedListener() {
-           @Override
-           public void opened(BannerAction action) {
-                WritableMap result = new WritableNativeMap();
-                result.putString("type", action.getType());
-                result.putString("name", action.getName());
-                result.putString("url", action.getUrl());
-                result.putString("urlType", action.getUrlType());
+        this.cleverPush.setAppBannerOpenedListener(action -> {
+             WritableMap result = new WritableNativeMap();
+             result.putString("type", action.getType());
+             result.putString("name", action.getName());
+             result.putString("url", action.getUrl());
+             result.putString("urlType", action.getUrlType());
 
-                sendEvent("CleverPush-appBannerOpened", result);
-            }
-        });
+             sendEvent("CleverPush-appBannerOpened", result);
+         });
     }
 
     @ReactMethod
     public void getSubscriptionTags(final Callback callback) {
-        if (pendingGetSubscriptionTagsCallback == null)
-            pendingGetSubscriptionTagsCallback = callback;
-
         Set<String> tags = this.cleverPush.getSubscriptionTags();
         WritableArray writableArray = new WritableNativeArray();
         for (String tag : tags) {
             writableArray.pushString(tag);
         }
 
-        if (pendingGetSubscriptionTagsCallback != null)
-            pendingGetSubscriptionTagsCallback.invoke(writableArray);
-
-        pendingGetSubscriptionTagsCallback = null;
+        if (callback != null) {
+            callback.invoke(null, writableArray);
+        }
     }
 
     @ReactMethod
     public void hasSubscriptionTag(String tagId, final Callback callback) {
-        if (pendingHasSubscriptionTagCallback == null)
-            pendingHasSubscriptionTagCallback = callback;
-
         boolean hasTag = this.cleverPush.hasSubscriptionTag(tagId);
 
-        if (pendingHasSubscriptionTagCallback != null)
-            pendingHasSubscriptionTagCallback.invoke(hasTag);
+        if (callback != null) {
+            callback.invoke(null, hasTag);
+        }
+    }
 
-        pendingHasSubscriptionTagCallback = null;
+    @ReactMethod
+    public void getSubscriptionTopics(final Callback callback) {
+        Set<String> topics = this.cleverPush.getSubscriptionTopics();
+        WritableArray writableArray = new WritableNativeArray();
+        for (String topic : topics) {
+            writableArray.pushString(topic);
+        }
+
+        if (callback != null) {
+            callback.invoke(null, writableArray);
+        }
     }
 
     @ReactMethod
     public void getSubscriptionAttributes(final Callback callback) {
-        if (pendingGetSubscriptionAttributesCallback == null)
-            pendingGetSubscriptionAttributesCallback = callback;
-
         Map<String, Object> attributes = this.cleverPush.getSubscriptionAttributes();
         WritableMap writableMap = new WritableNativeMap();
         for (Map.Entry<String, Object> attribute : attributes.entrySet()) {
             writableMap.putString(attribute.getKey(), attribute.getValue().toString());
         }
 
-        if (pendingGetSubscriptionAttributesCallback != null)
-            pendingGetSubscriptionAttributesCallback.invoke(writableMap);
-
-        pendingGetSubscriptionAttributesCallback = null;
+        if (callback != null) {
+            callback.invoke(null, writableMap);
+        }
     }
 
     @ReactMethod
     public void getSubscriptionAttribute(String attributeId, final Callback callback) {
-        if (pendingGetSubscriptionAttributeCallback == null)
-            pendingGetSubscriptionAttributeCallback = callback;
-
         Object value = this.cleverPush.getSubscriptionAttribute(attributeId);
 
-        if (pendingGetSubscriptionAttributeCallback != null)
-            pendingGetSubscriptionAttributeCallback.invoke(value);
-
-        pendingGetSubscriptionAttributeCallback = null;
+        if (callback != null) {
+            callback.invoke(null, value);
+        }
     }
 
     @ReactMethod
     public void getAvailableTags(final Callback callback) {
-        if (pendingGetAvailableTagsCallback == null)
-            pendingGetAvailableTagsCallback = callback;
+        this.cleverPush.getAvailableTags(tags -> {
+            WritableArray writableArray = new WritableNativeArray();
+            for (ChannelTag tag : tags) {
+                WritableMap writeableMapTag = new WritableNativeMap();
+                writeableMapTag.putString("id", tag.getId());
+                writeableMapTag.putString("name", tag.getName());
+                writableArray.pushMap(writeableMapTag);
+            }
 
-        Set<ChannelTag> tags = this.cleverPush.getAvailableTags();
-        WritableArray writableArray = new WritableNativeArray();
-        for (ChannelTag tag : tags) {
-            WritableMap writeableMapTag = new WritableNativeMap();
-            writeableMapTag.putString("id", tag.getId());
-            writeableMapTag.putString("name", tag.getName());
-            writableArray.pushMap(writeableMapTag);
-        }
+            if (callback != null) {
+                callback.invoke(null, writableArray);
+            }
+        });
+    }
 
-        if (pendingGetAvailableTagsCallback != null)
-            pendingGetAvailableTagsCallback.invoke(writableArray);
+    @ReactMethod
+    public void getAvailableTopics(final Callback callback) {
+        this.cleverPush.getAvailableTopics(topics -> {
+            WritableArray writableArray = new WritableNativeArray();
+            for (ChannelTopic topic : topics) {
+                WritableMap writeableMapTopic = new WritableNativeMap();
+                writeableMapTopic.putString("id", topic.getId());
+                writeableMapTopic.putString("name", topic.getName());
+                writableArray.pushMap(writeableMapTopic);
+            }
 
-        pendingGetAvailableTagsCallback = null;
+            if (callback != null) {
+                callback.invoke(null, writableArray);
+            }
+        });
     }
 
     @ReactMethod
     public void getAvailableAttributes(final Callback callback) {
-        if (pendingGetAvailableAttributesCallback == null)
-            pendingGetAvailableAttributesCallback = callback;
+        this.cleverPush.getAvailableAttributes(attributes -> {
+            WritableArray writableArray = new WritableNativeArray();
+            for (CustomAttribute attribute : attributes) {
+                WritableMap writeableMapTag = new WritableNativeMap();
+                writeableMapTag.putString("id", attribute.getId());
+                writeableMapTag.putString("name", attribute.getName());
+                writableArray.pushMap(writeableMapTag);
+            }
 
-        Set<CustomAttribute> attributes = this.cleverPush.getAvailableAttributes();
-        WritableArray writableArray = new WritableNativeArray();
-        for (CustomAttribute attribute : attributes) {
-            WritableMap writeableMapTag = new WritableNativeMap();
-            writeableMapTag.putString("id", attribute.getId());
-            writeableMapTag.putString("name", attribute.getName());
-            writableArray.pushMap(writeableMapTag);
-        }
-
-        if (pendingGetAvailableAttributesCallback != null)
-            pendingGetAvailableAttributesCallback.invoke(writableArray);
-
-        pendingGetAvailableAttributesCallback = null;
+            if (callback != null) {
+                callback.invoke(null, writableArray);
+            }
+        });
     }
 
     @ReactMethod
@@ -258,6 +251,34 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
+    public void setSubscriptionTopics(ReadableArray topicIdsReadableArray) {
+        if (this.cleverPush == null) {
+            return;
+        }
+        String[] topicIds = new String[topicIdsReadableArray.size()];
+        for (int i = 0; i < topicIdsReadableArray.size(); i++) {
+            topicIds[i] = topicIdsReadableArray.getString(i);
+        }
+        this.cleverPush.setSubscriptionTopics(topicIds);
+    }
+
+    @ReactMethod
+    public void addSubscriptionTopic(String topicId) {
+        if (this.cleverPush == null) {
+            return;
+        }
+        this.cleverPush.addSubscriptionTopic(topicId);
+    }
+
+    @ReactMethod
+    public void removeSubscriptionTopic(String topicId) {
+        if (this.cleverPush == null) {
+            return;
+        }
+        this.cleverPush.removeSubscriptionTopic(topicId);
+    }
+
+    @ReactMethod
     public void setSubscriptionAttribute(String attributeId, String value) {
         if (this.cleverPush == null) {
             return;
@@ -267,15 +288,11 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void isSubscribed(final Callback callback) {
-        if (pendingIsSubscribedCallback == null)
-            pendingIsSubscribedCallback = callback;
-
         boolean isSubscribed = this.cleverPush.isSubscribed();
 
-        if (pendingIsSubscribedCallback != null)
-            pendingIsSubscribedCallback.invoke(null, isSubscribed);
-
-        pendingIsSubscribedCallback = null;
+        if (callback != null) {
+            callback.invoke(null, isSubscribed);
+        }
     }
 
     @ReactMethod
@@ -333,9 +350,6 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void getNotifications(final Callback callback) {
-        if (pendingGetNotificationsCallback == null)
-            pendingGetNotificationsCallback = callback;
-
         Set<Notification> notifications = this.cleverPush.getNotifications();
         WritableArray writableArray = new WritableNativeArray();
         for (Notification notification : notifications) {
@@ -350,10 +364,9 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             writableArray.pushMap(writeableMap);
         }
 
-        if (pendingGetNotificationsCallback != null)
-            pendingGetNotificationsCallback.invoke(null, writableArray);
-
-        pendingGetNotificationsCallback = null;
+        if (callback != null) {
+            callback.invoke(null, writableArray);
+        }
     }
 
     @ReactMethod

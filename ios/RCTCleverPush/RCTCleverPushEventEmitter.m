@@ -86,6 +86,11 @@ RCT_EXPORT_METHOD(getAvailableTags:(RCTResponseSenderBlock)callback) {
     callback(@[[NSNull null], channelTags]);
 }
 
+RCT_EXPORT_METHOD(getAvailableTopics:(RCTResponseSenderBlock)callback) {
+    NSArray* channelTopics = [CleverPush getAvailableTopics];
+    callback(@[[NSNull null], channelTopics]);
+}
+
 RCT_EXPORT_METHOD(getAvailableAttributes:(RCTResponseSenderBlock)callback) {
     NSDictionary* customAttributes = [CleverPush getAvailableAttributes];
     callback(@[[NSNull null], customAttributes]);
@@ -94,6 +99,11 @@ RCT_EXPORT_METHOD(getAvailableAttributes:(RCTResponseSenderBlock)callback) {
 RCT_EXPORT_METHOD(getSubscriptionTags:(RCTResponseSenderBlock)callback) {
     NSArray* subscriptionTags = [CleverPush getSubscriptionTags];
     callback(@[[NSNull null], subscriptionTags]);
+}
+
+RCT_EXPORT_METHOD(getSubscriptionTopics:(RCTResponseSenderBlock)callback) {
+    NSArray* subscriptionTopics = [CleverPush getSubscriptionTopics];
+    callback(@[[NSNull null], subscriptionTopics]);
 }
 
 RCT_EXPORT_METHOD(getSubscriptionAttributes:(RCTResponseSenderBlock)callback) {
@@ -117,6 +127,18 @@ RCT_EXPORT_METHOD(addSubscriptionTag:(NSString *)tagId) {
 
 RCT_EXPORT_METHOD(removeSubscriptionTag:(NSString *)tagId) {
     [CleverPush removeSubscriptionTag:tagId];
+}
+
+RCT_EXPORT_METHOD(addSubscriptionTopic:(NSString *)topicId) {
+    [CleverPush addSubscriptionTopic:topicId];
+}
+
+RCT_EXPORT_METHOD(removeSubscriptionTopic:(NSString *)topicId) {
+    [CleverPush removeSubscriptionTopic:topicId];
+}
+
+RCT_EXPORT_METHOD(setSubscriptionTopics:(NSArray *)topicIds) {
+    [CleverPush setSubscriptionTopics:topicIds];
 }
 
 RCT_EXPORT_METHOD(setSubscriptionAttribute:(NSString *)attributeId value:(NSString*)value) {
