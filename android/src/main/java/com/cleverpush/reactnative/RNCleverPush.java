@@ -296,6 +296,15 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
+    public void areNotificationsEnabled(final Callback callback) {
+        boolean notificationsEnabled = this.cleverPush.areNotificationsEnabled();
+
+        if (callback != null) {
+            callback.invoke(null, notificationsEnabled);
+        }
+    }
+
+    @ReactMethod
     public void setSubscriptionLanguage(String language) {
         if (this.cleverPush == null) {
             return;

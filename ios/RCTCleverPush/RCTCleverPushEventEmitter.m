@@ -150,6 +150,12 @@ RCT_EXPORT_METHOD(isSubscribed:(RCTResponseSenderBlock)callback) {
     callback(@[[NSNull null], [NSNumber numberWithBool:isSubscribed]]);
 }
 
+RCT_EXPORT_METHOD(areNotificationsEnabled:(RCTResponseSenderBlock)callback) {
+    [self areNotificationsEnabled:^(BOOL notificationsEnabled) {
+        callback(@[[NSNull null], [NSNumber numberWithBool:notificationsEnabled]]);
+    }];
+}
+
 RCT_EXPORT_METHOD(setSubscriptionLanguage:(NSString *)language) {
     [CleverPush setSubscriptionLanguage:language];
 }

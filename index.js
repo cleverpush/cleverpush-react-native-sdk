@@ -202,6 +202,12 @@ export default class CleverPush {
     RNCleverPush.unsubscribe();
   }
 
+  static areNotificationsEnabled(callback) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.areNotificationsEnabled(callback);
+  }
+
   static showTopicsDialog() {
     if (!checkIfInitialized()) return;
 

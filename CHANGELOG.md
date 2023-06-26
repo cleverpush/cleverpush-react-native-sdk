@@ -1,3 +1,6 @@
+## 1.5.1
+* Added `areNotificationsEnabled` method
+
 ## 1.5.0
 * Updated to latest iOS + Android SDKs
 * Implemented new topic-related methods
