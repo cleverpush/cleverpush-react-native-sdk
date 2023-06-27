@@ -1,3 +1,6 @@
+## 1.5.2
+* Hotfix for `areNotificationsEnabled` method on iOS
+
 ## 1.5.1
 * Added `areNotificationsEnabled` method
 

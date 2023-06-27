@@ -151,7 +151,7 @@ RCT_EXPORT_METHOD(isSubscribed:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(areNotificationsEnabled:(RCTResponseSenderBlock)callback) {
-    [self areNotificationsEnabled:^(BOOL notificationsEnabled) {
+    [CleverPush areNotificationsEnabled:^(BOOL notificationsEnabled) {
         callback(@[[NSNull null], [NSNumber numberWithBool:notificationsEnabled]]);
     }];
 }
