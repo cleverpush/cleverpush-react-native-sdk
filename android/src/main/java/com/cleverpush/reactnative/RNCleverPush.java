@@ -31,6 +31,7 @@ import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.gson.Gson;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.json.JSONException;
@@ -379,7 +380,21 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             }
             if (notification.getCustomData() != null) {
                 String customData = gson.toJson(notification.getCustomData());
-                writeableMap.putString("customData", customData);
+                if (customData != null) {
+                    try {
+                        JSONObject customDataJson = new JSONObject(customData);
+                        WritableMap customDataMap = new WritableNativeMap();
+                        Iterator<String> keys = customDataJson.keys();
+                        while (keys.hasNext()) {
+                            String key = keys.next();
+                            String value = customDataJson.optString(key, "");
+                            customDataMap.putString(key, value);
+                        }
+                        notificationMap.putMap("customData", customDataMap);
+                    } catch (JSONException e) {
+                        t.printStackTrace();
+                    }
+                }
             }
             writeableMap.putBoolean("chatNotification", notification.isChatNotification());
             writeableMap.putBoolean("carouselEnabled", notification.isCarouselEnabled());
@@ -482,7 +497,21 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
                 }
                 if (notification.getCustomData() != null) {
                     String customData = gson.toJson(notification.getCustomData());
-                    notificationMap.putString("customData", customData);
+                    if (customData != null) {
+                        try {
+                            JSONObject customDataJson = new JSONObject(customData);
+                            WritableMap customDataMap = new WritableNativeMap();
+                            Iterator<String> keys = customDataJson.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                String value = customDataJson.optString(key, "");
+                                customDataMap.putString(key, value);
+                            }
+                            notificationMap.putMap("customData", customDataMap);
+                        } catch (JSONException e) {
+                            t.printStackTrace();
+                        }
+                    }
                 }
                 notificationMap.putBoolean("chatNotification", notification.isChatNotification());
                 notificationMap.putBoolean("carouselEnabled", notification.isCarouselEnabled());
