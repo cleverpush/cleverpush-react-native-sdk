@@ -1,3 +1,6 @@
+## 1.5.4
+* Hotfix for notification custom data payload for Android
+
 ## 1.5.3
 * Hotfix for notification custom data payload for Android
 
