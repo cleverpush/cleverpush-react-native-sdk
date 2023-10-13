@@ -29,6 +29,7 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -361,6 +362,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     public void getNotifications(final Callback callback) {
         Set<Notification> notifications = this.cleverPush.getNotifications();
         WritableArray writableArray = new WritableNativeArray();
+        Gson gson = new Gson();
         for (Notification notification : notifications) {
             WritableMap writeableMap = new WritableNativeMap();
             writeableMap.putString("_id", notification.getId());
@@ -370,6 +372,24 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             writeableMap.putString("iconUrl", notification.getIconUrl());
             writeableMap.putString("mediaUrl", notification.getMediaUrl());
             writeableMap.putString("createdAt", notification.getCreatedAt());
+            writeableMap.putString("tag", notification.getTag());
+            if (notification.getActions() != null) {
+                String actions = gson.toJson(notification.getActions());
+                writeableMap.putString("actions", actions);
+            }
+            if (notification.getCustomData() != null) {
+                String customData = gson.toJson(notification.getCustomData());
+                writeableMap.putString("customData", customData);
+            }
+            writeableMap.putBoolean("chatNotification", notification.isChatNotification());
+            writeableMap.putBoolean("carouselEnabled", notification.isCarouselEnabled());
+            if (notification.getCarouselItems() != null) {
+                String carouselItems = gson.toJson(notification.getCarouselItems());
+                writeableMap.putString("carouselItems", carouselItems);
+            }
+            writeableMap.putString("appBanner", notification.getAppBanner());
+            writeableMap.putString("inboxAppBanner", notification.getInboxAppBanner());
+
             writableArray.pushMap(writeableMap);
         }
 
@@ -447,6 +467,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
             Notification notification = (Notification) bundle.getSerializable("notification");
             if (notification != null) {
+                Gson gson = new Gson();
                 WritableMap notificationMap = new WritableNativeMap();
                 notificationMap.putString("id", notification.getId());
                 notificationMap.putString("title", notification.getTitle());
@@ -454,6 +475,26 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
                 notificationMap.putString("url", notification.getUrl());
                 notificationMap.putString("iconUrl", notification.getIconUrl());
                 notificationMap.putString("mediaUrl", notification.getMediaUrl());
+                notificationMap.putString("tag", notification.getTag());
+                if (notification.getActions() != null) {
+                    String actions = gson.toJson(notification.getActions());
+                    notificationMap.putString("actions", actions);
+                }
+                if (notification.getCustomData() != null) {
+                    String customData = gson.toJson(notification.getCustomData());
+                    notificationMap.putString("customData", customData);
+                }
+                notificationMap.putBoolean("chatNotification", notification.isChatNotification());
+                notificationMap.putBoolean("carouselEnabled", notification.isCarouselEnabled());
+                if (notification.getCarouselItems() != null) {
+                    String carouselItems = gson.toJson(notification.getCarouselItems());
+                    notificationMap.putString("carouselItems", carouselItems);
+                }
+                notificationMap.putString("soundFilename", notification.getSoundFilename());
+                notificationMap.putBoolean("silent", notification.isSilent());
+                notificationMap.putString("createdAt", notification.getCreatedAt());
+                notificationMap.putString("appBanner", notification.getAppBanner());
+                notificationMap.putString("inboxAppBanner", notification.getInboxAppBanner());
                 result.putMap("notification", notificationMap);
             }
 
