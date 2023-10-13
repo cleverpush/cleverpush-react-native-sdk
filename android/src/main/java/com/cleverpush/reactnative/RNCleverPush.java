@@ -390,9 +390,9 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
                             String value = customDataJson.optString(key, "");
                             customDataMap.putString(key, value);
                         }
-                        notificationMap.putMap("customData", customDataMap);
+                        writeableMap.putMap("customData", customDataMap);
                     } catch (JSONException e) {
-                        t.printStackTrace();
+                        e.printStackTrace();
                     }
                 }
             }
@@ -509,7 +509,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
                             }
                             notificationMap.putMap("customData", customDataMap);
                         } catch (JSONException e) {
-                            t.printStackTrace();
+                            e.printStackTrace();
                         }
                     }
                 }

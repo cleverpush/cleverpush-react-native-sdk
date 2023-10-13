@@ -1,3 +1,6 @@
+## 1.5.5
+* Hotfix for build failure on Android
+
 ## 1.5.4
 * Hotfix for notification custom data payload for Android
 
