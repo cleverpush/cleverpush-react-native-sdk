@@ -466,6 +466,25 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         }
     }
 
+    @ReactMethod
+    public void trackEvent(String name, ReadableMap properties) {
+        if (this.cleverPush == null) {
+            return;
+        }
+
+        if (properties != null) {
+            HashMap<String, String> propertiesMap = new HashMap<>();
+            ReadableMapKeySetIterator iterator = properties.keySetIterator();
+            while (iterator.hasNextKey()) {
+                String propertyKey = iterator.nextKey();
+                propertiesMap.put(propertyKey, properties.getString(propertyKey));
+            }
+          this.cleverPush.trackEvent(name, propertiesMap);
+        } else {
+          this.cleverPush.trackEvent(name);
+        }
+    }
+
     private void notifySubscribed(String subscriptionId) {
         try {
             WritableMap result = new WritableNativeMap();

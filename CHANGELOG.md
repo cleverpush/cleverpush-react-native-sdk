@@ -1,3 +1,7 @@
+## 1.6.0
+* Added `trackEvent` method
+* Updated native SDKs
+
 ## 1.5.5
 * Hotfix for build failure on Android
 

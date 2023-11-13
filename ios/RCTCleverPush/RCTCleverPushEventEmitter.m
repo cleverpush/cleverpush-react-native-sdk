@@ -209,4 +209,12 @@ RCT_EXPORT_METHOD(trackPageView:(NSString*)url params:(NSDictionary*)params) {
     }
 }
 
+RCT_EXPORT_METHOD(trackEvent:(NSString*)name properties:(NSDictionary*)properties) {
+    if (properties != nil) {
+        [CleverPush trackEvent:name];
+    } else {
+        [CleverPush trackEvent:name properties:properties];
+    }
+}
+
 @end

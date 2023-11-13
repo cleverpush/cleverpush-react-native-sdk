@@ -244,6 +244,12 @@ export default class CleverPush {
     RNCleverPush.trackPageView(url, params);
   }
 
+  static trackEvent(url, properties) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.trackEvent(url, properties);
+  }
+
   // iOS only
   static setAutoClearBadge(autoClear) {
     if (!checkIfInitialized()) return;

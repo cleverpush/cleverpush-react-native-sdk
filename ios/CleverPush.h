@@ -136,6 +136,7 @@ extern NSString * const CLEVERPUSH_SDK_VERSION;
 + (void)trackEvent:(NSString*)eventName amount:(NSNumber*)amount;
 + (void)trackPageView:(NSString*)url;
 + (void)trackPageView:(NSString*)url params:(NSDictionary*)params;
++ (void)trackEvent:(NSString*)name properties:(NSDictionary*)properties;
 + (void)increaseSessionVisits;
 
 + (void)showAppBanners __attribute__((deprecated));
