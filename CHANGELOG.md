@@ -1,3 +1,6 @@
+## 1.6.1
+* Fixed `trackEvent` method on Android
+
 ## 1.6.0
 * Added `trackEvent` method
 * Updated native SDKs

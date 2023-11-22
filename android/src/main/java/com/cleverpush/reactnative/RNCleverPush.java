@@ -473,7 +473,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         }
 
         if (properties != null) {
-            HashMap<String, String> propertiesMap = new HashMap<>();
+            HashMap<String, Object> propertiesMap = new HashMap<>();
             ReadableMapKeySetIterator iterator = properties.keySetIterator();
             while (iterator.hasNextKey()) {
                 String propertyKey = iterator.nextKey();
