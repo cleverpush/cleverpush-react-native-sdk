@@ -213,4 +213,8 @@ RCT_EXPORT_METHOD(trackEvent:(NSString*)name properties:(NSDictionary*)propertie
     }
 }
 
+RCT_EXPORT_METHOD(setAutoResubscribe:(BOOL)autoResubscribe) {
+    [CleverPush setAutoResubscribe:autoResubscribe];
+}
+
 @end

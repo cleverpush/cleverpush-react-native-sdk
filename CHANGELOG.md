@@ -1,3 +1,6 @@
+## 1.7.1
+* Implemented `setAutoResubscribe`
+
 ## 1.7.0
 * Updated to latest iOS + Android SDKs
 

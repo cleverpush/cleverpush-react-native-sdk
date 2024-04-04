@@ -448,6 +448,14 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
+    public void setAutoResubscribe(boolean autoResubscribe) {
+        if (this.cleverPush == null) {
+            return;
+        }
+        this.cleverPush.setAutoResubscribe(autoResubscribe);
+    }
+
+    @ReactMethod
     public void trackPageView(String url, ReadableMap params) {
         if (this.cleverPush == null) {
             return;

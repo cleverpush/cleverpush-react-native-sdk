@@ -250,6 +250,12 @@ export default class CleverPush {
     RNCleverPush.trackEvent(url, properties);
   }
 
+  static setAutoResubscribe(autoResubscribe) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.setAutoResubscribe(autoResubscribe);
+  }
+
   // iOS only
   static setAutoClearBadge(autoClear) {
     if (!checkIfInitialized()) return;
