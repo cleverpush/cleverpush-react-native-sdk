@@ -40,7 +40,7 @@ dependencies {
     implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
 
-    implementation('com.cleverpush:cleverpush:1.31.17') {
+    implementation('com.cleverpush:cleverpush:1.33.15') {
         exclude group: 'com.android.support'
     }
 }

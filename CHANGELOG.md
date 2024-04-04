@@ -1,3 +1,6 @@
+## 1.7.0
+* Updated to latest iOS + Android SDKs
+
 ## 1.6.1
 * Fixed `trackEvent` method on Android
 
