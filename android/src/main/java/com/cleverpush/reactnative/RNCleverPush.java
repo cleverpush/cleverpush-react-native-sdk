@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
+import android.os.Build;
 import android.util.Log;
 import com.cleverpush.ActivityLifecycleListener;
 import com.cleverpush.ChannelTag;
@@ -423,12 +424,23 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     private void registerNotificationsOpenedNotification() {
         IntentFilter intentFilter = new IntentFilter(NOTIFICATION_OPENED_INTENT_FILTER);
-        mReactContext.registerReceiver(new BroadcastReceiver() {
+        BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 notifyNotificationOpened(intent.getExtras());
             }
-        }, intentFilter);
+        };
+        compatRegisterReceiver(mReactApplicationContext, mBroadcastReceiver, intentFilter, true);
+    }
+
+    // https://developer.android.com/about/versions/14/behavior-changes-14#runtime-receivers-exported
+    private void compatRegisterReceiver(Context context, BroadcastReceiver receiver, IntentFilter filter, boolean exported) {
+        if (Build.VERSION.SDK_INT >= 34 && context.getApplicationInfo().targetSdkVersion >= 34) {
+            context.registerReceiver(
+                receiver, filter, exported ? Context.RECEIVER_EXPORTED : Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            context.registerReceiver(receiver, filter);
+        }
     }
 
     @ReactMethod
