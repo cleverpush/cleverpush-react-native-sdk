@@ -1,3 +1,7 @@
+## 1.7.2
+* Updated to latest iOS + Android SDKs
+* Fix for Android targetSdkVersion >= 34
+
 ## 1.7.1
 * Implemented `setAutoResubscribe`
 

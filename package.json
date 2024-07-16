@@ -1,6 +1,6 @@
 {
   "name": "cleverpush-react-native",
-  "version": "1.7.1",
+  "version": "1.7.2",
   "description": "CleverPush React Native SDK",
   "main": "index",
   "scripts": {
