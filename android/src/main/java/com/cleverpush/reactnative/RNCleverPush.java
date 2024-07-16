@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import com.cleverpush.ActivityLifecycleListener;
@@ -423,12 +424,35 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     private void registerNotificationsOpenedNotification() {
         IntentFilter intentFilter = new IntentFilter(NOTIFICATION_OPENED_INTENT_FILTER);
-        mReactContext.registerReceiver(new BroadcastReceiver() {
+        BroadcastReceiver receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 notifyNotificationOpened(intent.getExtras());
             }
-        }, intentFilter);
+        };
+        registerReceiverWithCompatibility(mReactContext, receiver, intentFilter, true);
+    }
+
+    /**
+     * Registers a broadcast receiver to listen for notifications opened events.
+     * <p>
+     * This method sets up an IntentFilter for the specified notification opened intent
+     * and registers a BroadcastReceiver to handle these intents. For devices running
+     * Android 14 (API level 34) and above, it uses the Context.RECEIVER_EXPORTED or
+     * Context.RECEIVER_NOT_EXPORTED flag to ensure the receiver is private to the app.
+     * For lower API levels, it registers the receiver without this flag.
+     * <p>
+     * RECEIVER_NOT_EXPORTED: Use this flag if the receiver should not be accessible by other applications.
+     * <p>
+     * RECEIVER_EXPORTED: Use this flag if the receiver should be accessible by other applications.
+     */
+    private void registerReceiverWithCompatibility(Context context, BroadcastReceiver receiver, IntentFilter filter, boolean exported) {
+        if (Build.VERSION.SDK_INT >= 34 && context.getApplicationInfo().targetSdkVersion >= 34) {
+            context.registerReceiver(
+                receiver, filter, exported ? Context.RECEIVER_EXPORTED : Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            context.registerReceiver(receiver, filter);
+        }
     }
 
     @ReactMethod
