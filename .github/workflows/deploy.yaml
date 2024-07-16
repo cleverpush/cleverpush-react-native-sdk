@@ -9,6 +9,9 @@ jobs:
   deploy:
     name: Release new version to NPM
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       # Setup .npmrc file to publish to npm
