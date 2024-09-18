@@ -190,6 +190,12 @@ export default class CleverPush {
     RNCleverPush.isSubscribed(callback);
   }
 
+  static getSubscriptionId(callback) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.getSubscriptionId(callback);
+  }
+
   static subscribe() {
     if (!checkIfInitialized()) return;
 

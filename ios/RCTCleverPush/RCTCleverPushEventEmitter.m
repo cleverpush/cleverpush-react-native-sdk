@@ -146,6 +146,12 @@ RCT_EXPORT_METHOD(isSubscribed:(RCTResponseSenderBlock)callback) {
     callback(@[[NSNull null], [NSNumber numberWithBool:isSubscribed]]);
 }
 
+RCT_EXPORT_METHOD(getSubscriptionId:(RCTResponseSenderBlock)callback) {
+    [CleverPush getSubscriptionId:^(NSString* subscriptionId) {
+        callback(@[[NSNull null], subscriptionId]);
+    }];
+}
+
 RCT_EXPORT_METHOD(areNotificationsEnabled:(RCTResponseSenderBlock)callback) {
     [CleverPush areNotificationsEnabled:^(BOOL notificationsEnabled) {
         callback(@[[NSNull null], [NSNumber numberWithBool:notificationsEnabled]]);

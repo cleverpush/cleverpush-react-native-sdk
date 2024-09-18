@@ -1,3 +1,7 @@
+## 1.7.3
+* Updated to latest iOS + Android SDKs
+* Implemented `getSubscriptionId`
+
 ## 1.7.2
 * Updated to latest iOS + Android SDKs
 * Fix for Android targetSdkVersion >= 34

@@ -299,6 +299,15 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
+    public void getSubscriptionId(final Callback callback) {
+        this.cleverPush.getSubscriptionId(subscriptionId -> {
+            if (callback != null) {
+                callback.invoke(null, subscriptionId);
+            }
+        });
+    }
+
+    @ReactMethod
     public void areNotificationsEnabled(final Callback callback) {
         boolean notificationsEnabled = this.cleverPush.areNotificationsEnabled();
 
