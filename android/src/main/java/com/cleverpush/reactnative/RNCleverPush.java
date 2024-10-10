@@ -40,6 +40,7 @@ import org.json.JSONObject;
 
 public class RNCleverPush extends ReactContextBaseJavaModule implements LifecycleEventListener {
     public static final String NOTIFICATION_OPENED_INTENT_FILTER = "CPNotificationOpened";
+    public static final String NOTIFICATION_RECEIVED_INTENT_FILTER = "CPNotificationReceived";
 
     private CleverPush cleverPush;
     private ReactApplicationContext mReactApplicationContext;
@@ -70,6 +71,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         if (!registeredEvents) {
             registeredEvents = true;
             registerNotificationsOpenedNotification();
+            registerNotificationsReceivedNotification();
         }
 
         String channelId = channelIdFromManifest(mReactApplicationContext);
@@ -87,8 +89,8 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     private void sendEvent(String eventName, Object params) {
         mReactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit(eventName, params);
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit(eventName, params);
     }
 
     private JSONObject jsonFromErrorMessageString(String errorMessage) throws JSONException {
@@ -111,22 +113,25 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         }
 
         this.cleverPush = CleverPush.getInstance(context);
-        cleverPush.init(options.getString("channelId"), new NotificationOpenedHandler(mReactContext), new SubscribedListener() {
-            @Override
-            public void subscribed(String subscriptionId) {
-                notifySubscribed(subscriptionId);
-            }
-        });
+        cleverPush.init(options.getString("channelId"),
+            new NotificationReceivedHandler(mReactContext),
+            new NotificationOpenedHandler(mReactContext),
+            new SubscribedListener() {
+                @Override
+                public void subscribed(String subscriptionId) {
+                    notifySubscribed(subscriptionId);
+                }
+            });
 
         this.cleverPush.setAppBannerOpenedListener(action -> {
-             WritableMap result = new WritableNativeMap();
-             result.putString("type", action.getType());
-             result.putString("name", action.getName());
-             result.putString("url", action.getUrl());
-             result.putString("urlType", action.getUrlType());
+            WritableMap result = new WritableNativeMap();
+            result.putString("type", action.getType());
+            result.putString("name", action.getName());
+            result.putString("url", action.getUrl());
+            result.putString("urlType", action.getUrlType());
 
-             sendEvent("CleverPush-appBannerOpened", result);
-         });
+            sendEvent("CleverPush-appBannerOpened", result);
+        });
     }
 
     @ReactMethod
@@ -366,7 +371,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void showAppBanners(final Callback callback) {
-       // Deprecated
+        // Deprecated
     }
 
     @ReactMethod
@@ -442,6 +447,17 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         registerReceiverWithCompatibility(mReactContext, receiver, intentFilter, true);
     }
 
+    private void registerNotificationsReceivedNotification() {
+        IntentFilter intentFilter = new IntentFilter(NOTIFICATION_RECEIVED_INTENT_FILTER);
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                notifyNotificationReceived(intent.getExtras());
+            }
+        };
+        registerReceiverWithCompatibility(mReactContext, receiver, intentFilter, true);
+    }
+
     /**
      * Registers a broadcast receiver to listen for notifications opened events.
      * <p>
@@ -501,9 +517,9 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
                 String paramKey = iterator.nextKey();
                 paramsMap.put(paramKey, params.getString(paramKey));
             }
-          this.cleverPush.trackPageView(url, paramsMap);
+            this.cleverPush.trackPageView(url, paramsMap);
         } else {
-          this.cleverPush.trackPageView(url);
+            this.cleverPush.trackPageView(url);
         }
     }
 
@@ -520,9 +536,9 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
                 String propertyKey = iterator.nextKey();
                 propertiesMap.put(propertyKey, properties.getString(propertyKey));
             }
-          this.cleverPush.trackEvent(name, propertiesMap);
+            this.cleverPush.trackEvent(name, propertiesMap);
         } else {
-          this.cleverPush.trackEvent(name);
+            this.cleverPush.trackEvent(name);
         }
     }
 
@@ -595,6 +611,70 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             }
 
             sendEvent("CleverPush-notificationOpened", result);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    private void notifyNotificationReceived(Bundle bundle) {
+        try {
+            WritableMap result = new WritableNativeMap();
+
+            Notification notification = (Notification) bundle.getSerializable("notification");
+            if (notification != null) {
+                Gson gson = new Gson();
+                WritableMap notificationMap = new WritableNativeMap();
+                notificationMap.putString("id", notification.getId());
+                notificationMap.putString("title", notification.getTitle());
+                notificationMap.putString("text", notification.getText());
+                notificationMap.putString("url", notification.getUrl());
+                notificationMap.putString("iconUrl", notification.getIconUrl());
+                notificationMap.putString("mediaUrl", notification.getMediaUrl());
+                notificationMap.putString("tag", notification.getTag());
+                if (notification.getActions() != null) {
+                    String actions = gson.toJson(notification.getActions());
+                    notificationMap.putString("actions", actions);
+                }
+                if (notification.getCustomData() != null) {
+                    String customData = gson.toJson(notification.getCustomData());
+                    if (customData != null) {
+                        try {
+                            JSONObject customDataJson = new JSONObject(customData);
+                            WritableMap customDataMap = new WritableNativeMap();
+                            Iterator<String> keys = customDataJson.keys();
+                            while (keys.hasNext()) {
+                                String key = keys.next();
+                                String value = customDataJson.optString(key, "");
+                                customDataMap.putString(key, value);
+                            }
+                            notificationMap.putMap("customData", customDataMap);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                notificationMap.putBoolean("chatNotification", notification.isChatNotification());
+                notificationMap.putBoolean("carouselEnabled", notification.isCarouselEnabled());
+                if (notification.getCarouselItems() != null) {
+                    String carouselItems = gson.toJson(notification.getCarouselItems());
+                    notificationMap.putString("carouselItems", carouselItems);
+                }
+                notificationMap.putString("soundFilename", notification.getSoundFilename());
+                notificationMap.putBoolean("silent", notification.isSilent());
+                notificationMap.putString("createdAt", notification.getCreatedAt());
+                notificationMap.putString("appBanner", notification.getAppBanner());
+                notificationMap.putString("inboxAppBanner", notification.getInboxAppBanner());
+                result.putMap("notification", notificationMap);
+            }
+
+            Subscription subscription = (Subscription) bundle.getSerializable("subscription");
+            if (subscription != null) {
+                WritableMap subscriptionMap = new WritableNativeMap();
+                subscriptionMap.putString("id", subscription.getId());
+                result.putMap("subscription", subscriptionMap);
+            }
+
+            sendEvent("CleverPush-notificationReceived", result);
         } catch (Throwable t) {
             t.printStackTrace();
         }
