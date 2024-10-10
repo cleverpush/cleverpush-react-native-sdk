@@ -3,10 +3,10 @@ package com.cleverpush.reactnative;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.cleverpush.NotificationOpenedResult;
+import com.cleverpush.listener.NotificationOpenedListener;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactContext;
-import com.cleverpush.listener.NotificationOpenedListener;
-import com.cleverpush.NotificationOpenedResult;
 
 public class NotificationOpenedHandler implements NotificationOpenedListener {
 
@@ -26,15 +26,15 @@ public class NotificationOpenedHandler implements NotificationOpenedListener {
         intent.putExtras(bundle);
 
         if (mReactContext.hasActiveCatalystInstance()) {
-			mReactContext.sendBroadcast(intent);
+            mReactContext.sendBroadcast(intent);
             return;
         }
 
         mReactContext.addLifecycleEventListener(new LifecycleEventListener() {
             @Override
             public void onHostResume() {
-              mReactContext.sendBroadcast(intent);
-                      mReactContext.removeLifecycleEventListener(this);
+                mReactContext.sendBroadcast(intent);
+                mReactContext.removeLifecycleEventListener(this);
             }
 
             @Override
