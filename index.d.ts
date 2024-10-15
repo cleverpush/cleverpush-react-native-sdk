@@ -2,11 +2,15 @@ declare module 'cleverpush-react-native' {
 	export default class CleverPush {
 		static init(channelId: string, options?: InitOptions): void;
 
+		static enableDevelopmentMode(): void;
 		static isSubscribed(callback: (error, isSubscribed: boolean) => void): void;
 		static areNotificationsEnabled(callback: (error, notificationsEnabled: boolean) => void): void;
 		static subscribe(): void;
 		static unsubscribe(): void;
 		static showTopicsDialog(): void;
+		static setShowNotificationsInForeground(show: boolean): void;
+		static setIncrementBadge(increment: boolean): void;
+		static setAutoClearBadge(autoClear: boolean): void;
 
 		static addEventListener(
 			type: EventType,

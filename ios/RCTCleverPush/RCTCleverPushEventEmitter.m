@@ -223,4 +223,8 @@ RCT_EXPORT_METHOD(setAutoResubscribe:(BOOL)autoResubscribe) {
     [CleverPush setAutoResubscribe:autoResubscribe];
 }
 
+RCT_EXPORT_METHOD(setShowNotificationsInForeground:(BOOL)show) {
+    [CleverPush setShowNotificationsInForeground:show];
+}
+
 @end

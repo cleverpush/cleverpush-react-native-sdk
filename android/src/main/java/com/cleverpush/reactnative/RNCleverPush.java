@@ -14,7 +14,9 @@ import com.cleverpush.ChannelTopic;
 import com.cleverpush.CleverPush;
 import com.cleverpush.CustomAttribute;
 import com.cleverpush.Notification;
+import com.cleverpush.NotificationOpenedResult;
 import com.cleverpush.Subscription;
+import com.cleverpush.listener.NotificationReceivedCallbackListener;
 import com.cleverpush.listener.SubscribedListener;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -47,6 +49,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     private ReactContext mReactContext;
     private boolean cleverPushInitDone;
     private boolean registeredEvents = false;
+    private boolean showNotificationsInForeground = false;
 
     public RNCleverPush(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -113,8 +116,33 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         }
 
         this.cleverPush = CleverPush.getInstance(context);
+
+        NotificationReceivedCallbackListener notificationReceivedCallbackListener = new NotificationReceivedCallbackListener() {
+            @Override
+            public boolean notificationReceivedCallback(NotificationOpenedResult result) {
+                Log.d("CleverPush", "notificationReceived");
+
+                try {
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("notification", result.getNotification());
+                    bundle.putSerializable("subscription", result.getSubscription());
+
+                    final Intent intent = new Intent(RNCleverPush.NOTIFICATION_RECEIVED_INTENT_FILTER);
+                    intent.putExtras(bundle);
+
+                    if (mReactContext.hasActiveCatalystInstance()) {
+                        mReactContext.sendBroadcast(intent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("CleverPush", "Encountered an error attempting to convert CPNotification object to map: " + e.getMessage());
+                }
+
+                return showNotificationsInForeground;
+            }
+        };
         cleverPush.init(options.getString("channelId"),
-            new NotificationReceivedHandler(mReactContext),
+            notificationReceivedCallbackListener,
             new NotificationOpenedHandler(mReactContext),
             new SubscribedListener() {
                 @Override
@@ -540,6 +568,11 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         } else {
             this.cleverPush.trackEvent(name);
         }
+    }
+
+    @ReactMethod
+    public void setShowNotificationsInForeground(boolean show) {
+        this.showNotificationsInForeground = show;
     }
 
     private void notifySubscribed(String subscriptionId) {
