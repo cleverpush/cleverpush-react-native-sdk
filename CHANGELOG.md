@@ -1,3 +1,7 @@
+## 1.7.5
+* Implemented `setShowNotificationsInForeground` method
+* Fixed `received` event for Android
+
 ## 1.7.4
 * Fixed previous release
 
