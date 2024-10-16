@@ -3,7 +3,9 @@ declare module 'cleverpush-react-native' {
 		static init(channelId: string, options?: InitOptions): void;
 
 		static enableDevelopmentMode(): void;
+		static requestLocationPermission(): void;
 		static isSubscribed(callback: (error, isSubscribed: boolean) => void): void;
+		static getSubscriptionId(callback: (error, subscriptionId: string) => void): void;
 		static areNotificationsEnabled(callback: (error, notificationsEnabled: boolean) => void): void;
 		static subscribe(): void;
 		static unsubscribe(): void;
@@ -11,6 +13,7 @@ declare module 'cleverpush-react-native' {
 		static setShowNotificationsInForeground(show: boolean): void;
 		static setIncrementBadge(increment: boolean): void;
 		static setAutoClearBadge(autoClear: boolean): void;
+		static setAutoResubscribe(autoResubscribe: boolean): void;
 
 		static addEventListener(
 			type: EventType,
@@ -23,17 +26,24 @@ declare module 'cleverpush-react-native' {
 		static clearListeners(): void;
 
 		static getAvailableTags(callback: (error, channelTags: Tag[]) => void): void;
-		static getAvailableAttributes(callback: (error, channelTags: Attribute[]) => void): void;
 		static getSubscriptionTags(callback: (error, tagIds: string[]) => void): void;
-		static getSubscriptionAttributes(callback: (error, attributes: Record<string, string>) => void): void;
 		static addSubscriptionTag(tagId: string): void;
 		static removeSubscriptionTag(tagId: string): void;
-		static setSubscriptionAttribute(attributeId: string, value: string): void;
 		static hasSubscriptionTag(tagId: string, callback: (error, hasTag: boolean) => void): void;
+		static getAvailableAttributes(callback: (error, channelAttribute: Attribute[]) => void): void;
+		static getSubscriptionAttributes(callback: (error, attributes: Record<string, string>) => void): void;
+		static setSubscriptionAttribute(attributeId: string, value: string): void;
 		static getSubscriptionAttribute(attributeId: string, callback: (error, attributeValue: string) => void): void;
+		static getSubscriptionTopics(callback: (error, topics: string[]) => void): void;
+		static getAvailableTopics(callback: (error, channelTopics: Topic[]) => void): void;
+		static setSubscriptionTopics(topicIds: string[]): void;
+		static addSubscriptionTopic(topicId: string): void;
+		static removeSubscriptionTopic(topicId: string): void;
+		static trackEvent(url: string, properties: Record<string, any>): void;
+		static trackEvent(url: string): void;
+
 		static setSubscriptionLanguage(value: string): void;
 		static setSubscriptionCountry(value: string): void;
-
 		static trackPageView(url: string, params: Record<string, any>): void;
 
 		static getNotifications(callback: (error, notifications: Notification[]) => void): void;
@@ -46,6 +56,11 @@ declare module 'cleverpush-react-native' {
 	type EventType = 'received' | 'opened' | 'subscribed' | 'appBannerOpened';
 
 	export interface Tag {
+		id: string;
+		name: string;
+	}
+
+    export interface Topic {
 		id: string;
 		name: string;
 	}
