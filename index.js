@@ -262,6 +262,12 @@ export default class CleverPush {
     RNCleverPush.setAutoResubscribe(autoResubscribe);
   }
 
+  static setShowNotificationsInForeground(show) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.setShowNotificationsInForeground(show);
+  }
+
   // iOS only
   static setAutoClearBadge(autoClear) {
     if (!checkIfInitialized()) return;
