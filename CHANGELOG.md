@@ -1,3 +1,7 @@
+## 1.7.6
+* Improved TypeScript definitions
+* Updated to latest iOS + Android SDKs
+
 ## 1.7.5
 * Implemented `setShowNotificationsInForeground` method
 * Fixed `received` event for Android
