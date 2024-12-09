@@ -575,6 +575,19 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         this.showNotificationsInForeground = show;
     }
 
+    /**
+     * Added for NativeEventEmitter
+     */
+    @ReactMethod
+    public void addListener(String eventName) {
+        // Keep: Required for RN built in Event Emitter Calls.
+    }
+
+    @ReactMethod
+    public void removeListeners(int count) {
+        // Keep: Required for RN built in Event Emitter Calls.
+    }
+
     private void notifySubscribed(String subscriptionId) {
         try {
             WritableMap result = new WritableNativeMap();
