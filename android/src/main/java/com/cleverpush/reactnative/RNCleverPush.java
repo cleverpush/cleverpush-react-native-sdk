@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.cleverpush.ActivityLifecycleListener;
 import com.cleverpush.ChannelTag;
 import com.cleverpush.ChannelTopic;
@@ -33,10 +34,12 @@ import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.gson.Gson;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -142,14 +145,16 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             }
         };
         cleverPush.init(options.getString("channelId"),
-            notificationReceivedCallbackListener,
-            new NotificationOpenedHandler(mReactContext),
-            new SubscribedListener() {
-                @Override
-                public void subscribed(String subscriptionId) {
-                    notifySubscribed(subscriptionId);
-                }
-            });
+                notificationReceivedCallbackListener,
+                new NotificationOpenedHandler(mReactContext),
+                new SubscribedListener() {
+                    @Override
+                    public void subscribed(String subscriptionId) {
+                        notifySubscribed(subscriptionId);
+                    }
+                },
+                options.getBoolean("autoRegister")
+        );
 
         this.cleverPush.setAppBannerOpenedListener(action -> {
             WritableMap result = new WritableNativeMap();
