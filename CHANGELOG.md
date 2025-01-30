@@ -1,3 +1,6 @@
+## 1.7.8
+* Fixed `autoRegister` parameter for Android.
+
 ## 1.7.7
 * Fixed warning in Android: new `NativeEventEmitter()` was called with a non-null argument without the required method.
 
