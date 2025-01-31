@@ -144,6 +144,9 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
                 return showNotificationsInForeground;
             }
         };
+
+        boolean autoRegister = options.hasKey("autoRegister") ? options.getBoolean("autoRegister") : true;
+
         cleverPush.init(options.getString("channelId"),
                 notificationReceivedCallbackListener,
                 new NotificationOpenedHandler(mReactContext),
@@ -153,7 +156,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
                         notifySubscribed(subscriptionId);
                     }
                 },
-                options.getBoolean("autoRegister")
+                autoRegister
         );
 
         this.cleverPush.setAppBannerOpenedListener(action -> {
