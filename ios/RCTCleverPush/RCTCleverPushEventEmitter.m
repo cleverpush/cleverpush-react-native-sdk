@@ -203,6 +203,16 @@ RCT_EXPORT_METHOD(setIncrementBadge:(BOOL)increment) {
     [CleverPush setIncrementBadge:increment];
 }
 
+RCT_EXPORT_METHOD(setBadgeCount:(NSInteger)count) {
+    [CleverPush setBadgeCount:count];
+}
+
+RCT_EXPORT_METHOD(getBadgeCount:(RCTResponseSenderBlock)callback) {
+    [CleverPush getBadgeCount:^(NSInteger badge) {
+        callback(@[[NSNull null], [NSNumber numberWithInteger:badge]]);
+    }];
+}
+
 RCT_EXPORT_METHOD(trackPageView:(NSString*)url params:(NSDictionary*)params) {
     if (params != nil) {
         [CleverPush trackPageView:url];

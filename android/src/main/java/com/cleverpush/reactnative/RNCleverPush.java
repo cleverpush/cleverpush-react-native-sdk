@@ -533,6 +533,23 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
+    public void setBadgeCount(int count) {
+        if (this.cleverPush == null) {
+            return;
+        }
+        this.cleverPush.setBadgeCount(count);
+    }
+
+    @ReactMethod
+    public void getBadgeCount(final Callback callback) {
+        if (this.cleverPush == null || callback == null) {
+            return;
+        }
+        int count = this.cleverPush.getBadgeCount();
+        callback.invoke(null, count);
+    }
+
+    @ReactMethod
     public void setAutoResubscribe(boolean autoResubscribe) {
         if (this.cleverPush == null) {
             return;

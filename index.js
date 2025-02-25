@@ -281,4 +281,16 @@ export default class CleverPush {
 
     RNCleverPush.setIncrementBadge(increment);
   }
+
+  static setBadgeCount(count) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.setBadgeCount(count);
+  }
+
+  static getBadgeCount(callback) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.getBadgeCount(callback);
+  }
 }
