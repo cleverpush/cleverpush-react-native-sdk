@@ -1,3 +1,6 @@
+## 1.7.9
+* Implemented `getBadgeCount` and `setBadgeCount` methods
+
 ## 1.7.8
 * Fixed `autoRegister` parameter for Android.
 
