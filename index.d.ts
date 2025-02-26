@@ -16,6 +16,7 @@ declare module 'cleverpush-react-native' {
 		static setAutoResubscribe(autoResubscribe: boolean): void;
 		static setBadgeCount(count: number): void;
 		static getBadgeCount(callback: (error, count: number) => void): void;
+		static clearNotificationsFromNotificationCenter(): void;
 
 		static addEventListener(
 			type: EventType,

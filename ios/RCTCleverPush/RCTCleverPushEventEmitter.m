@@ -1,5 +1,6 @@
 #import "RCTCleverPushEventEmitter.h"
 #import <CleverPush/CleverPush.h>
+#import <UserNotifications/UserNotifications.h>
 
 #import "RCTCleverPush.h"
 
@@ -235,6 +236,10 @@ RCT_EXPORT_METHOD(setAutoResubscribe:(BOOL)autoResubscribe) {
 
 RCT_EXPORT_METHOD(setShowNotificationsInForeground:(BOOL)show) {
     [CleverPush setShowNotificationsInForeground:show];
+}
+
+RCT_EXPORT_METHOD(clearNotificationsFromNotificationCenter) {
+    [[UNUserNotificationCenter currentNotificationCenter] removeAllDeliveredNotifications];
 }
 
 @end
