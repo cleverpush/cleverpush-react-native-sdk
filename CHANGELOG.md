@@ -1,3 +1,6 @@
+## 1.7.10
+* Implemented `clearNotificationsFromNotificationCenter` method on iOS
+
 ## 1.7.9
 * Implemented `getBadgeCount` and `setBadgeCount` methods
 
