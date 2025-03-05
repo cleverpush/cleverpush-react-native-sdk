@@ -52,7 +52,8 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     private ReactContext mReactContext;
     private boolean cleverPushInitDone;
     private boolean registeredEvents = false;
-    private boolean showNotificationsInForeground = false;
+    private boolean showNotificationsInForeground = true;
+    private boolean isAppInForeground = false;
 
     public RNCleverPush(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -124,24 +125,31 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             @Override
             public boolean notificationReceivedCallback(NotificationOpenedResult result) {
                 Log.d("CleverPush", "notificationReceived");
+                boolean appIsOpen = isAppOpen();
 
-                try {
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("notification", result.getNotification());
-                    bundle.putSerializable("subscription", result.getSubscription());
+                if (appIsOpen) {
+                    try {
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("notification", result.getNotification());
+                        bundle.putSerializable("subscription", result.getSubscription());
 
-                    final Intent intent = new Intent(RNCleverPush.NOTIFICATION_RECEIVED_INTENT_FILTER);
-                    intent.putExtras(bundle);
+                        final Intent intent = new Intent(RNCleverPush.NOTIFICATION_RECEIVED_INTENT_FILTER);
+                        intent.putExtras(bundle);
 
-                    if (mReactContext.hasActiveCatalystInstance()) {
-                        mReactContext.sendBroadcast(intent);
+                        if (mReactContext.hasActiveCatalystInstance()) {
+                            mReactContext.sendBroadcast(intent);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Log.e("CleverPush", "Encountered an error attempting to convert CPNotification object to map: " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("CleverPush", "Encountered an error attempting to convert CPNotification object to map: " + e.getMessage());
                 }
 
-                return showNotificationsInForeground;
+                if (showNotificationsInForeground) {
+                    return true;
+                }
+
+                return !appIsOpen;
             }
         };
 
@@ -758,16 +766,17 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     @Override
     public void onHostDestroy() {
-
+        isAppInForeground = false;
     }
 
     @Override
     public void onHostPause() {
-
+        isAppInForeground = false;
     }
 
     @Override
     public void onHostResume() {
+        isAppInForeground = true;
         initCleverPush();
         Context context = getCurrentActivity();
         if (context == null) {
@@ -775,5 +784,9 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
         }
         this.cleverPush = CleverPush.getInstance(context);
         ActivityLifecycleListener.currentActivity = getCurrentActivity();
+    }
+
+    public boolean isAppOpen() {
+        return isAppInForeground;
     }
 }
