@@ -1,3 +1,6 @@
+## 1.7.12
+* Updated to latest iOS + Android SDKs
+
 ## 1.7.11 (05.03.2025)
 * Updated to latest iOS + Android SDKs
 * Fixed an issue on Android, where notifications were also being hidden in the background when using `setShowNotificationsInForeground(false)`.
