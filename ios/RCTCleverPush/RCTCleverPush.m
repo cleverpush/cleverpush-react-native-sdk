@@ -98,8 +98,6 @@ NSDictionary* pendingLaunchOptions;
     pendingLaunchOptions = launchOptions;
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didBeginObserving) name:@"didSetBridge" object:nil];
-    
-    [CleverPush setAutoClearBadge:NO];
 
     didInitialize = false;
 }
