@@ -1,3 +1,6 @@
+## 1.7.13
+* Removed automatic `setAutoClearBadge(false)` call on iOS
+
 ## 1.7.12
 * Updated to latest iOS + Android SDKs
 
