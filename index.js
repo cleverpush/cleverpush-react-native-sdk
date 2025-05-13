@@ -300,13 +300,9 @@ export default class CleverPush {
     RNCleverPush.clearNotificationsFromNotificationCenter();
   }
 
-  static removeNotification(notificationId, removeFromNotificationCenter) {
+  static removeNotification(notificationId, removeFromNotificationCenter = false) {
     if (!checkIfInitialized()) return;
 
-    if (typeof removeFromNotificationCenter === 'boolean') {
-      RNCleverPush.removeNotification(notificationId, removeFromNotificationCenter);
-    } else {
-      RNCleverPush.removeNotification(notificationId);
-    }
+    RNCleverPush.removeNotification(notificationId, removeFromNotificationCenter);
   }
 }
