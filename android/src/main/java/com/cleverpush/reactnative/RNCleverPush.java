@@ -1,5 +1,6 @@
 package com.cleverpush.reactnative;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -606,6 +607,19 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     @ReactMethod
     public void setShowNotificationsInForeground(boolean show) {
         this.showNotificationsInForeground = show;
+    }
+
+    @ReactMethod
+    public void clearNotificationsFromNotificationCenter() {
+        try {
+            NotificationManager notificationManager = (NotificationManager)
+                    mReactApplicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.cancelAll();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

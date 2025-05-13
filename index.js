@@ -294,7 +294,6 @@ export default class CleverPush {
     RNCleverPush.getBadgeCount(callback);
   }
 
-  // iOS only
   static clearNotificationsFromNotificationCenter() {
     if (!checkIfInitialized()) return;
 
