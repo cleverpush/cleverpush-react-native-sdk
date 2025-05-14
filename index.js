@@ -303,6 +303,10 @@ export default class CleverPush {
   static removeNotification(notificationId, removeFromNotificationCenter = false) {
     if (!checkIfInitialized()) return;
 
-    RNCleverPush.removeNotification(notificationId, removeFromNotificationCenter);
+    if (removeFromNotificationCenter) {
+      RNCleverPush.removeNotificationWithCenter(notificationId, removeFromNotificationCenter);
+    } else {
+      RNCleverPush.removeNotification(notificationId);
+    }
   }
 }

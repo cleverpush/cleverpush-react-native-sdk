@@ -631,7 +631,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
-    public void removeNotification(String notificationId, boolean removeFromNotificationCenter) {
+    public void removeNotificationWithCenter(String notificationId, boolean removeFromNotificationCenter) {
         if (this.cleverPush == null) {
             return;
         }

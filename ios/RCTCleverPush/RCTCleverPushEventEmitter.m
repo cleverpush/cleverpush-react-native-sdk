@@ -114,8 +114,8 @@ RCT_EXPORT_METHOD(getSubscriptionAttribute:(NSString *)attributeId callback:(RCT
 }
 
 RCT_EXPORT_METHOD(hasSubscriptionTag:(NSString *)tagId callback:(RCTResponseSenderBlock)callback) {
-        bool hasTag = [CleverPush hasSubscriptionTag:tagId];
-        callback(@[[NSNull null], [NSNumber numberWithBool:hasTag]]);
+    bool hasTag = [CleverPush hasSubscriptionTag:tagId];
+    callback(@[[NSNull null], [NSNumber numberWithBool:hasTag]]);
 }
 
 RCT_EXPORT_METHOD(addSubscriptionTag:(NSString *)tagId) {
@@ -242,13 +242,12 @@ RCT_EXPORT_METHOD(clearNotificationsFromNotificationCenter) {
     [[UNUserNotificationCenter currentNotificationCenter] removeAllDeliveredNotifications];
 }
 
-RCT_EXPORT_METHOD(removeNotification:(NSString *)notificationId removeFromNotificationCenter:(BOOL)removeFromNotificationCenter) {
+RCT_EXPORT_METHOD(removeNotificationWithCenter:(NSString *)notificationId removeFromNotificationCenter:(BOOL)removeFromNotificationCenter) {
     [CleverPush removeNotification:notificationId removeFromNotificationCenter:removeFromNotificationCenter];
 }
 
 RCT_EXPORT_METHOD(removeNotification:(NSString *)notificationId) {
     [CleverPush removeNotification:notificationId];
 }
-
 
 @end
