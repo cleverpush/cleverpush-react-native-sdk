@@ -1,3 +1,8 @@
+## 1.7.14 (14.05.2025)
+* Implemented `clearNotificationsFromNotificationCenter` method on Android
+* Implemented `removeNotification` method on Android and iOS
+* Updated to latest iOS + Android SDKs
+
 ## 1.7.13
 * Removed automatic `setAutoClearBadge(false)` call on iOS
 
