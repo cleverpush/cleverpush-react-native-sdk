@@ -294,10 +294,19 @@ export default class CleverPush {
     RNCleverPush.getBadgeCount(callback);
   }
 
-  // iOS only
   static clearNotificationsFromNotificationCenter() {
     if (!checkIfInitialized()) return;
 
     RNCleverPush.clearNotificationsFromNotificationCenter();
+  }
+
+  static removeNotification(notificationId, removeFromNotificationCenter = false) {
+    if (!checkIfInitialized()) return;
+
+    if (removeFromNotificationCenter) {
+      RNCleverPush.removeNotificationWithCenter(notificationId, removeFromNotificationCenter);
+    } else {
+      RNCleverPush.removeNotification(notificationId);
+    }
   }
 }
