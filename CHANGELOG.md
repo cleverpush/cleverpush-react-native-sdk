@@ -1,3 +1,7 @@
+## 1.7.15 (17.06.2025)
+* Optimized `initFeatures` functions for preventing crashes regarding the UI thread.
+* Updated to latest iOS + Android SDKs
+
 ## 1.7.14 (14.05.2025)
 * Implemented `clearNotificationsFromNotificationCenter` method on Android
 * Implemented `removeNotification` method on Android and iOS
