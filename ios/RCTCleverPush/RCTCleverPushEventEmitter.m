@@ -90,17 +90,23 @@ RCT_EXPORT_METHOD(getAvailableTopics:(RCTResponseSenderBlock)callback) {
     for (CPChannelTopic *topic in channelTopics) {
         NSMutableDictionary *topicDict = [NSMutableDictionary dictionary];
         
-        if (topic.id != nil && ![topic.id isKindOfClass:[NSNull class]] && ![topic.id isEqualToString:@""]) {
-            [topicDict setObject:topic.id forKey:@"id"];
-        } else {
-            [topicDict setObject:@"" forKey:@"id"];
+        NSString *topicId = @"";
+        if (topic.id != nil && ![topic.id isKindOfClass:[NSNull class]] && [topic.id isKindOfClass:[NSString class]]) {
+            NSString *idString = (NSString *)topic.id;
+            if (![idString isEqualToString:@""]) {
+                topicId = idString;
+            }
         }
+        [topicDict setObject:topicId forKey:@"id"];
         
-        if (topic.name != nil && ![topic.name isKindOfClass:[NSNull class]] && ![topic.name isEqualToString:@""]) {
-            [topicDict setObject:topic.name forKey:@"name"];
-        } else {
-            [topicDict setObject:@"" forKey:@"name"];
+        NSString *topicName = @"";
+        if (topic.name != nil && ![topic.name isKindOfClass:[NSNull class]] && [topic.name isKindOfClass:[NSString class]]) {
+            NSString *nameString = (NSString *)topic.name;
+            if (![nameString isEqualToString:@""]) {
+                topicName = nameString;
+            }
         }
+        [topicDict setObject:topicName forKey:@"name"];
         
         [topicsArray addObject:topicDict];
     }
