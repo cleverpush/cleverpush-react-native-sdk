@@ -88,9 +88,20 @@ RCT_EXPORT_METHOD(getAvailableTopics:(RCTResponseSenderBlock)callback) {
     NSMutableArray *topicsArray = [NSMutableArray new];
     
     for (CPChannelTopic *topic in channelTopics) {
-        NSMutableDictionary *topicDict = [NSMutableDictionary new];
-        [topicDict setObject:topic.id forKey:@"id"];
-        [topicDict setObject:topic.name forKey:@"name"];
+        NSMutableDictionary *topicDict = [NSMutableDictionary dictionary];
+        
+        if (topic.id != nil && ![topic.id isKindOfClass:[NSNull class]] && ![topic.id isEqualToString:@""]) {
+            [topicDict setObject:topic.id forKey:@"id"];
+        } else {
+            [topicDict setObject:@"" forKey:@"id"];
+        }
+        
+        if (topic.name != nil && ![topic.name isKindOfClass:[NSNull class]] && ![topic.name isEqualToString:@""]) {
+            [topicDict setObject:topic.name forKey:@"name"];
+        } else {
+            [topicDict setObject:@"" forKey:@"name"];
+        }
+        
         [topicsArray addObject:topicDict];
     }
     
