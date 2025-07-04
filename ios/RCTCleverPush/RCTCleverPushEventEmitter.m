@@ -84,8 +84,34 @@ RCT_EXPORT_METHOD(getAvailableTags:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(getAvailableTopics:(RCTResponseSenderBlock)callback) {
-    NSArray* channelTopics = [CleverPush getAvailableTopics];
-    callback(@[[NSNull null], channelTopics]);
+    NSArray *channelTopics = [CleverPush getAvailableTopics];
+    NSMutableArray *topicsArray = [NSMutableArray new];
+    
+    for (CPChannelTopic *topic in channelTopics) {
+        NSMutableDictionary *topicDict = [NSMutableDictionary dictionary];
+        
+        NSString *topicId = @"";
+        if (topic.id != nil && ![topic.id isKindOfClass:[NSNull class]] && [topic.id isKindOfClass:[NSString class]]) {
+            NSString *idString = (NSString *)topic.id;
+            if (![idString isEqualToString:@""]) {
+                topicId = idString;
+            }
+        }
+        [topicDict setObject:topicId forKey:@"id"];
+        
+        NSString *topicName = @"";
+        if (topic.name != nil && ![topic.name isKindOfClass:[NSNull class]] && [topic.name isKindOfClass:[NSString class]]) {
+            NSString *nameString = (NSString *)topic.name;
+            if (![nameString isEqualToString:@""]) {
+                topicName = nameString;
+            }
+        }
+        [topicDict setObject:topicName forKey:@"name"];
+        
+        [topicsArray addObject:topicDict];
+    }
+    
+    callback(@[[NSNull null], topicsArray]);
 }
 
 RCT_EXPORT_METHOD(getAvailableAttributes:(RCTResponseSenderBlock)callback) {
