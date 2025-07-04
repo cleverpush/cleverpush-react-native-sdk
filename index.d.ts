@@ -54,7 +54,7 @@ declare module 'cleverpush-react-native' {
 		static removeNotification(notificationId: string, removeFromNotificationCenter?: boolean): void;
 
 		static enableAppBanners(): void;
-        static disableAppBanners(): void;
+		static disableAppBanners(): void;
 	}
 
 	export type InitOptions = {
