@@ -309,4 +309,17 @@ export default class CleverPush {
       RNCleverPush.removeNotification(notificationId);
     }
   }
+
+  static enableAppBanners() {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.enableAppBanners();
+  }
+
+  static disableAppBanners() {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.disableAppBanners();
+  }
+
 }

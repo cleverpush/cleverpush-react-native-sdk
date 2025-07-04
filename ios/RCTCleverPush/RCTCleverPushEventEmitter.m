@@ -250,4 +250,12 @@ RCT_EXPORT_METHOD(removeNotification:(NSString *)notificationId) {
     [CleverPush removeNotification:notificationId];
 }
 
+RCT_EXPORT_METHOD(enableAppBanners) {
+        [CleverPush enableAppBanners];
+}
+
+RCT_EXPORT_METHOD(disableAppBanners) {
+        [CleverPush disableAppBanners];
+}
+
 @end
