@@ -1,3 +1,7 @@
+## 1.7.16 (06.07.2025)
+* Implemented `enableAppBanners` and `disableAppBanners` methods on Android and iOS
+* Fixed an issue in `getAvailableTopics` on iOS, which now returns a list of topic objects instead of null.
+
 ## 1.7.15 (17.06.2025)
 * Optimized `initFeatures` functions for preventing crashes regarding the UI thread.
 * Updated to latest iOS + Android SDKs
