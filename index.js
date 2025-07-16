@@ -2,90 +2,38 @@ import { NativeModules, NativeEventEmitter, NetInfo, Platform } from 'react-nati
 import invariant from 'invariant';
 
 const RNCleverPush = NativeModules.CleverPush;
-
-const eventBroadcastNames = [
-  'CleverPush-notificationReceived',
-  'CleverPush-notificationOpened',
-  'CleverPush-appBannerOpened',
-  'CleverPush-subscribed'
-];
-
-var CleverPushEventEmitter;
-
-var _eventNames = ['received', 'opened', 'appBannerOpened', 'subscribed'];
-
-var _notificationHandler = new Map();
-var _notificationCache = new Map();
-var _listeners = [];
-
-if (RNCleverPush != null) {
-  CleverPushEventEmitter = new NativeEventEmitter(RNCleverPush);
-
-  for (var i = 0; i < eventBroadcastNames.length; i++) {
-    var eventBroadcastName = eventBroadcastNames[i];
-    var eventName = _eventNames[i];
-
-    _listeners[eventName] = handleEventBroadcast(eventName, eventBroadcastName)
-  }
-}
-
-function handleEventBroadcast(type, broadcast) {
-  return CleverPushEventEmitter.addListener(
-    broadcast, (notification) => {
-      var handler = _notificationHandler.get(type);
-
-      if (handler) {
-        handler(notification);
-      } else {
-        _notificationCache.set(type, notification);
-      }
-    }
-  );
-}
+const cleverPushEventEmitter = new NativeEventEmitter(RNCleverPush);
 
 function checkIfInitialized() {
   return RNCleverPush != null;
 }
 
 export default class CleverPush {
-  static addEventListener(type, handler) {
-    if (!checkIfInitialized()) return;
-
-    invariant(
-      type === 'received' || type === 'opened' || type === 'subscribed' || type === 'appBannerOpened',
-      'CleverPush only supports `received`, `opened`, `appBannerOpened`, and `subscribed` events'
-    );
-
-    _notificationHandler.set(type, handler);
-
-    var cache = _notificationCache.get(type);
-    if (handler && cache) {
-      handler(cache);
-      _notificationCache.delete(type);
-    }
-  }
-
-  static removeEventListener(type, handler) {
-    if (!checkIfInitialized()) return;
-
-    invariant(
-      type === 'received' || type === 'opened' || type === 'subscribed' || type === 'appBannerOpened',
-      'CleverPush only supports `received`, `opened`, `appBannerOpened`, and `subscribed` events'
-    );
-
-    _notificationHandler.delete(type);
-  }
-
-  static clearListeners() {
-    if (!checkIfInitialized()) return;
-
-    for (var i = 0; i < _eventNames.length; i++) {
-      _listeners[_eventNames].remove();
-    }
-  }
 
   static init(channelId, options) {
     RNCleverPush.init(Object.assign({ channelId }, options));
+  }
+
+  static addSubscribedListener(listener) {
+    return cleverPushEventEmitter.addListener('CleverPush-subscribed', listener);
+  }
+
+  static addNotificationOpenedListener(listener) {
+    return cleverPushEventEmitter.addListener('CleverPush-notificationOpened', listener);
+  }
+
+  static addNotificationReceivedListener(listener) {
+    return cleverPushEventEmitter.addListener('CleverPush-notificationReceived', listener);
+  }
+
+  static addAppBannerOpenedListener(listener) {
+    return cleverPushEventEmitter.addListener('CleverPush-appBannerOpened', listener);
+  }
+
+  static removeEventListener(subscription) {
+    if (subscription && typeof subscription.remove === 'function') {
+      subscription.remove();
+    }
   }
 
   static getAvailableTags(callback) {

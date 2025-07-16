@@ -2,6 +2,13 @@ declare module 'cleverpush-react-native' {
 	export default class CleverPush {
 		static init(channelId: string, options?: InitOptions): void;
 
+		// Event Listeners
+		static addSubscribedListener(listener: (event: SubscribedEvent) => void): EventSubscription;
+		static addNotificationOpenedListener(listener: (event: NotificationEvent) => void): EventSubscription;
+		static addNotificationReceivedListener(listener: (event: NotificationEvent) => void): EventSubscription;
+		static addAppBannerOpenedListener(listener: (event: AppBannerOpenedEvent) => void): EventSubscription;
+		static removeEventListener(subscription: EventSubscription): void;
+
 		static enableDevelopmentMode(): void;
 		static requestLocationPermission(): void;
 		static isSubscribed(callback: (error, isSubscribed: boolean) => void): void;
@@ -17,16 +24,6 @@ declare module 'cleverpush-react-native' {
 		static setBadgeCount(count: number): void;
 		static getBadgeCount(callback: (error, count: number) => void): void;
 		static clearNotificationsFromNotificationCenter(): void;
-
-		static addEventListener(
-			type: EventType,
-			handler: (result: { notification: Notification; subscription: Subscription }) => void
-		): void;
-		static removeEventListener(
-			type: EventType,
-			handler: (result: { notification: Notification; subscription: Subscription }) => void
-		): void;
-		static clearListeners(): void;
 
 		static getAvailableTags(callback: (error, channelTags: Tag[]) => void): void;
 		static getSubscriptionTags(callback: (error, tagIds: string[]) => void): void;
@@ -60,8 +57,6 @@ declare module 'cleverpush-react-native' {
 	export type InitOptions = {
 		autoRegister?: boolean;
 	};
-
-	type EventType = 'received' | 'opened' | 'subscribed' | 'appBannerOpened';
 
 	export interface Tag {
 		id: string;
@@ -139,5 +134,25 @@ declare module 'cleverpush-react-native' {
 
 	export interface NotificationCarouselItem {
 		mediaUrl: string;
+	}
+
+	export interface EventSubscription {
+		remove(): void;
+	}
+
+	export interface SubscribedEvent {
+		id: string;
+	}
+
+	export interface NotificationEvent {
+		notification: Notification;
+		subscription: Subscription;
+	}
+
+	export interface AppBannerOpenedEvent {
+		type: string;
+		name: string;
+		url: string;
+		urlType: string;
 	}
 }
