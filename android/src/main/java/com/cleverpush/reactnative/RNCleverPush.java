@@ -655,7 +655,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     /**
-     * Added for NativeEventEmitter
+     * Required for NativeEventEmitter
      */
     @ReactMethod
     public void addListener(String eventName) {

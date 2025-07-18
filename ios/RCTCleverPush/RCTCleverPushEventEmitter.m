@@ -284,7 +284,7 @@ RCT_EXPORT_METHOD(disableAppBanners) {
         [CleverPush disableAppBanners];
 }
 
-// Required for RN built in Event Emitter Calls
+// Required for NativeEventEmitter
 RCT_EXPORT_METHOD(addListener:(NSString *)eventName) {
     // Keep: Required for RN built in Event Emitter Calls.
 }
