@@ -19,13 +19,31 @@ declare module 'cleverpush-react-native' {
 		static clearNotificationsFromNotificationCenter(): void;
 
 		static addEventListener(
-			type: EventType,
+			type: 'received' | 'opened',
+			handler: (result: { notification: Notification; subscription: Subscription }) => void
+		): void;
+		static addEventListener(
+			type: 'subscribed',
+			handler: (result: { id: string }) => void
+		): void;
+		static addEventListener(
+			type: 'appBannerOpened',
+			handler: (result: { appBannerOpened: AppBannerOpenedEvent }) => void
+		): void;
+
+		static removeEventListener(
+			type: 'received' | 'opened',
 			handler: (result: { notification: Notification; subscription: Subscription }) => void
 		): void;
 		static removeEventListener(
-			type: EventType,
-			handler: (result: { notification: Notification; subscription: Subscription }) => void
+			type: 'subscribed',
+			handler: (result: { id: string }) => void
 		): void;
+		static removeEventListener(
+			type: 'appBannerOpened',
+			handler: (result: { appBannerOpened: AppBannerOpenedEvent }) => void
+		): void;
+
 		static clearListeners(): void;
 
 		static getAvailableTags(callback: (error, channelTags: Tag[]) => void): void;
@@ -139,5 +157,12 @@ declare module 'cleverpush-react-native' {
 
 	export interface NotificationCarouselItem {
 		mediaUrl: string;
+	}
+
+	export interface AppBannerOpenedEvent {
+		type: string;
+		name: string;
+		url: string;
+		urlType: string;
 	}
 }
