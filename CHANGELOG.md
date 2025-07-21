@@ -1,3 +1,6 @@
+## 1.7.17 (21.07.2025)
+* Fixed the issue where the `subscribed` listener was not being called on Android
+
 ## 1.7.16 (06.07.2025)
 * Implemented `enableAppBanners` and `disableAppBanners` methods on Android and iOS
 * Fixed an issue in `getAvailableTopics` on iOS, which now returns a list of topic objects instead of null.
