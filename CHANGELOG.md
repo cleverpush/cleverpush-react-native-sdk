@@ -1,3 +1,6 @@
+## 1.7.18 (29.07.2025)
+* Updated to latest iOS + Android SDKs
+
 ## 1.7.17 (21.07.2025)
 * Fixed the issue where the `subscribed` listener was not being called on Android
 
