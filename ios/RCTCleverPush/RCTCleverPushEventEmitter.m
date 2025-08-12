@@ -285,7 +285,7 @@ RCT_EXPORT_METHOD(disableAppBanners) {
 }
 
 RCT_EXPORT_METHOD(getDeviceToken:(RCTResponseSenderBlock)callback) {
-    [[CleverPush sharedInstance] getDeviceToken:^(NSString * _Nullable token) {
+    [CleverPush getDeviceToken:^(NSString * _Nullable token) {
         if (callback) {
             callback(@[[NSNull null], token ?: [NSNull null]]);
         }
