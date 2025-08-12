@@ -73,6 +73,9 @@ declare module 'cleverpush-react-native' {
 
 		static enableAppBanners(): void;
 		static disableAppBanners(): void;
+
+		// Android Only
+		static getDeviceToken(callback: (error, deviceToken: string) => void): void;
 	}
 
 	export type InitOptions = {
