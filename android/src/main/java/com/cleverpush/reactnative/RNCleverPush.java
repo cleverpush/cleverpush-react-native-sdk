@@ -18,6 +18,7 @@ import com.cleverpush.CustomAttribute;
 import com.cleverpush.Notification;
 import com.cleverpush.NotificationOpenedResult;
 import com.cleverpush.Subscription;
+import com.cleverpush.listener.DeviceTokenListener;
 import com.cleverpush.listener.NotificationReceivedCallbackListener;
 import com.cleverpush.listener.SubscribedListener;
 import com.facebook.react.bridge.Callback;
@@ -652,6 +653,21 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             return;
         }
         this.cleverPush.disableAppBanners();
+    }
+
+    @ReactMethod
+    public void getDeviceToken(final Callback callback) {
+        if (this.cleverPush == null) {
+            return;
+        }
+        this.cleverPush.getDeviceToken(new DeviceTokenListener() {
+            @Override
+            public void complete(String deviceToken) {
+                if (callback != null) {
+                    callback.invoke(null, deviceToken);
+                }
+            }
+        });
     }
 
     /**
