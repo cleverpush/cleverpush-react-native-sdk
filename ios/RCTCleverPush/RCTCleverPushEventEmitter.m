@@ -277,11 +277,19 @@ RCT_EXPORT_METHOD(removeNotification:(NSString *)notificationId) {
 }
 
 RCT_EXPORT_METHOD(enableAppBanners) {
-        [CleverPush enableAppBanners];
+    [CleverPush enableAppBanners];
 }
 
 RCT_EXPORT_METHOD(disableAppBanners) {
-        [CleverPush disableAppBanners];
+    [CleverPush disableAppBanners];
+}
+
+RCT_EXPORT_METHOD(getDeviceToken:(RCTResponseSenderBlock)callback) {
+    [[CleverPush sharedInstance] getDeviceToken:^(NSString * _Nullable token) {
+        if (callback) {
+            callback(@[[NSNull null], token ?: [NSNull null]]);
+        }
+    }];
 }
 
 @end

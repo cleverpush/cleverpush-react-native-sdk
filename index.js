@@ -322,7 +322,6 @@ export default class CleverPush {
     RNCleverPush.disableAppBanners();
   }
 
-  // Android only
   static getDeviceToken(callback) {
     if (!checkIfInitialized()) return;
 

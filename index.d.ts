@@ -62,19 +62,13 @@ declare module 'cleverpush-react-native' {
 		static removeSubscriptionTopic(topicId: string): void;
 		static trackEvent(url: string, properties: Record<string, any>): void;
 		static trackEvent(url: string): void;
-
 		static setSubscriptionLanguage(value: string): void;
 		static setSubscriptionCountry(value: string): void;
 		static trackPageView(url: string, params: Record<string, any>): void;
-
 		static getNotifications(callback: (error, notifications: Notification[]) => void): void;
-
 		static removeNotification(notificationId: string, removeFromNotificationCenter?: boolean): void;
-
 		static enableAppBanners(): void;
 		static disableAppBanners(): void;
-
-		// Android Only
 		static getDeviceToken(callback: (error, deviceToken: string) => void): void;
 	}
 
