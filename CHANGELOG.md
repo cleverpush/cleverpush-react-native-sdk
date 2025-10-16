@@ -1,3 +1,6 @@
+## 1.7.21 (16.10.2025)
+* Updated to latest iOS + Android SDKs
+
 ## 1.7.20 (19.08.2025)
 * Updated to latest iOS + Android SDKs
 * Implemented `getDeviceToken` method on Android and iOS
