@@ -5,13 +5,14 @@ on:
     tags:
     - '*'
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   deploy:
     name: Release new version to NPM
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -23,9 +24,7 @@ jobs:
       - run: npm ci
 
       - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
+      
       - name: Generate Changelog
         run: |
           sed -n "/$GITHUB_REF_NAME/,/^$/{/^$/q;p;}" CHANGELOG.md > ${{ github.workspace }}-CHANGELOG.txt
