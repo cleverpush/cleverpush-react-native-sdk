@@ -293,7 +293,7 @@ RCT_EXPORT_METHOD(getDeviceToken:(RCTResponseSenderBlock)callback) {
 }
 
 RCT_EXPORT_METHOD(removeAllNotifications) {
-    CleverPush removeAllNotifications];
+    [CleverPush removeAllNotifications];
 }
 
 @end
