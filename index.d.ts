@@ -70,6 +70,7 @@ declare module 'cleverpush-react-native' {
 		static enableAppBanners(): void;
 		static disableAppBanners(): void;
 		static getDeviceToken(callback: (error, deviceToken: string) => void): void;
+		static removeAllNotifications(): void;
 	}
 
 	export type InitOptions = {
