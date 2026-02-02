@@ -328,4 +328,10 @@ export default class CleverPush {
     RNCleverPush.getDeviceToken(callback);
   }
 
+  static removeAllNotifications() {
+      if (!checkIfInitialized()) return;
+
+      RNCleverPush.removeAllNotifications();
+    }
+
 }
