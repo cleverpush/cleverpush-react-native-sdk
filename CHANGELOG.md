@@ -1,3 +1,7 @@
+## 1.7.23 (02.02.2026)
+* Implemented a new method `removeAllNotifications` to clear all locally stored notifications.
+* Updated to latest iOS + Android SDKs
+
 ## 1.7.22 (17.12.2025)
 * Updated to latest iOS + Android SDKs
 
