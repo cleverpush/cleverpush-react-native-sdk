@@ -1,3 +1,7 @@
+## 1.7.25 (16.04.2026)
+* Improved compatibility with Gradle 8+ and Gradle 9
+* Updated to latest iOS + Android SDKs
+
 ## 1.7.24 (02.04.2026)
 * Updated to latest iOS + Android SDKs
 

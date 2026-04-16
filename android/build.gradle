@@ -30,7 +30,7 @@ dependencies {
 
     implementation "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
 
-    implementation('com.cleverpush:cleverpush:1.35.25') {
+    implementation('com.cleverpush:cleverpush:1.35.26') {
         exclude group: 'com.android.support'
     }
 }
