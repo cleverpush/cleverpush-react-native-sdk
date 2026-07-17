@@ -1,3 +1,6 @@
+## 1.7.30 (17.07.2026)
+* Updated to latest iOS + Android SDKs
+
 ## 1.7.29 (02.07.2026)
 * Updated to latest iOS + Android SDKs
 
