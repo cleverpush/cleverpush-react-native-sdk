@@ -184,16 +184,16 @@ export default class CleverPush {
     RNCleverPush.setSubscriptionCountry(value);
   }
 
-  static setNotificationDelivered(notificationId) {
+  static trackNotificationDelivered(notificationId) {
     if (!checkIfInitialized()) return;
 
-    RNCleverPush.setNotificationDelivered(notificationId);
+    RNCleverPush.trackNotificationDelivered(notificationId);
   }
 
-  static setNotificationClicked(notificationId) {
+  static trackNotificationClicked(notificationId) {
     if (!checkIfInitialized()) return;
 
-    RNCleverPush.setNotificationClicked(notificationId);
+    RNCleverPush.trackNotificationClicked(notificationId);
   }
   
   static isSubscribed(callback) {
