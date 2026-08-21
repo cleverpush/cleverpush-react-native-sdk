@@ -384,19 +384,19 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
-    public void setNotificationDelivered(String notificationId) {
+    public void trackNotificationDelivered(String notificationId) {
         if (this.cleverPush == null) {
             return;
         }
-        this.cleverPush.setNotificationDelivered(notificationId);
+        this.cleverPush.trackNotificationDelivered(notificationId);
     }   
 
     @ReactMethod
-    public void setNotificationClicked(String notificationId) {
+    public void trackNotificationClicked(String notificationId) {
         if (this.cleverPush == null) {
             return;
         }
-        this.cleverPush.setNotificationClicked(notificationId);
+        this.cleverPush.trackNotificationClicked(notificationId);
     }
     
     @ReactMethod
