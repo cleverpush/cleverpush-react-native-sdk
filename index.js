@@ -184,6 +184,18 @@ export default class CleverPush {
     RNCleverPush.setSubscriptionCountry(value);
   }
 
+  static setNotificationDelivered(notificationId) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.setNotificationDelivered(notificationId);
+  }
+
+  static setNotificationClicked(notificationId) {
+    if (!checkIfInitialized()) return;
+
+    RNCleverPush.setNotificationClicked(notificationId);
+  }
+  
   static isSubscribed(callback) {
     if (!checkIfInitialized()) return;
 

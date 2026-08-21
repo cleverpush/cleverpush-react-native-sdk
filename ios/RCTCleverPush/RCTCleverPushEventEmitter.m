@@ -193,6 +193,14 @@ RCT_EXPORT_METHOD(setSubscriptionCountry:(NSString *)country) {
     [CleverPush setSubscriptionCountry:country];
 }
 
+RCT_EXPORT_METHOD(setNotificationDelivered:(NSString *)notificationId) {
+    [CleverPush setNotificationDelivered:notificationId];
+}   
+
+RCT_EXPORT_METHOD(setNotificationClicked:(NSString *)notificationId) {
+    [CleverPush setNotificationClicked:notificationId];
+}   
+
 RCT_EXPORT_METHOD(subscribe) {
     dispatch_async(dispatch_get_main_queue(), ^{
         [CleverPush subscribe];
