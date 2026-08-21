@@ -193,12 +193,12 @@ RCT_EXPORT_METHOD(setSubscriptionCountry:(NSString *)country) {
     [CleverPush setSubscriptionCountry:country];
 }
 
-RCT_EXPORT_METHOD(setNotificationDelivered:(NSString *)notificationId) {
-    [CleverPush setNotificationDelivered:notificationId];
+RCT_EXPORT_METHOD(trackNotificationDelivered:(NSString *)notificationId) {
+    [CleverPush trackNotificationDelivered:notificationId];
 }   
 
-RCT_EXPORT_METHOD(setNotificationClicked:(NSString *)notificationId) {
-    [CleverPush setNotificationClicked:notificationId];
+RCT_EXPORT_METHOD(trackNotificationClicked:(NSString *)notificationId) {
+    [CleverPush trackNotificationClicked:notificationId];
 }   
 
 RCT_EXPORT_METHOD(subscribe) {
