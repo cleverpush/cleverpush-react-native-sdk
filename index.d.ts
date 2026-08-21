@@ -64,8 +64,8 @@ declare module 'cleverpush-react-native' {
 		static trackEvent(url: string): void;
 		static setSubscriptionLanguage(value: string): void;
 		static setSubscriptionCountry(value: string): void;
-		static setNotificationDelivered(notificationId: string): void;
-		static setNotificationClicked(notificationId: string): void;
+		static trackNotificationDelivered(notificationId: string): void;
+		static trackNotificationClicked(notificationId: string): void;
 		static trackPageView(url: string, params: Record<string, any>): void;
 		static getNotifications(callback: (error, notifications: Notification[]) => void): void;
 		static removeNotification(notificationId: string, removeFromNotificationCenter?: boolean): void;
