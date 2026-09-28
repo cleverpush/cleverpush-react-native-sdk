@@ -1,3 +1,6 @@
+## 1.7.33 (28.09.2026)
+* Updated to latest iOS + Android SDKs
+
 ## 1.7.32 (28.08.2026)
 * Updated to latest iOS + Android SDKs
 * implemented setNotificationDelivered and setNotificationClicked  public methods for manually reporting notification delivered and clicked events.
