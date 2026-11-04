@@ -11,6 +11,7 @@ declare module 'cleverpush-react-native' {
 		static unsubscribe(): void;
 		static showTopicsDialog(): void;
 		static setShowNotificationsInForeground(show: boolean): void;
+		static setNotificationHandler(handler: NotificationHandler | null): void;
 		static setIncrementBadge(increment: boolean): void;
 		static setAutoClearBadge(autoClear: boolean): void;
 		static setAutoResubscribe(autoResubscribe: boolean): void;
@@ -78,6 +79,22 @@ declare module 'cleverpush-react-native' {
 	export type InitOptions = {
 		autoRegister?: boolean;
 	};
+
+	export interface NotificationBehavior {
+		/** false hides the notification. On iOS this also hides the banner and the notification list. */
+		shouldShowAlert?: boolean;
+		/** Android only. false keeps the notification in the shade without a heads-up popup. */
+		shouldShowBanner?: boolean;
+		shouldPlaySound?: boolean;
+		/** iOS only. Android ignores this. */
+		shouldSetBadge?: boolean;
+	}
+
+	export interface NotificationHandler {
+		handleNotification: (
+			event: { notification: Notification; subscription?: Subscription }
+		) => NotificationBehavior | Promise<NotificationBehavior>;
+	}
 
 	type EventType = 'received' | 'opened' | 'subscribed' | 'appBannerOpened';
 

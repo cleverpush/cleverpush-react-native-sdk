@@ -5,6 +5,7 @@ def safeExtGet(prop, fallback) {
 }
 
 repositories {
+    mavenLocal()
     google()
     mavenCentral()
 }

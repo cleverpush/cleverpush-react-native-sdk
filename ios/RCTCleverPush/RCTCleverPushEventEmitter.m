@@ -272,6 +272,14 @@ RCT_EXPORT_METHOD(setShowNotificationsInForeground:(BOOL)show) {
     [CleverPush setShowNotificationsInForeground:show];
 }
 
+RCT_EXPORT_METHOD(setNotificationHandlerEnabled:(BOOL)enabled) {
+    [[RCTCleverPush sharedInstance] setNotificationHandlerEnabled:enabled];
+}
+
+RCT_EXPORT_METHOD(setNotificationBehavior:(NSString *)requestId behavior:(NSDictionary *)behavior) {
+    [[RCTCleverPush sharedInstance] completeNotificationBehavior:requestId behavior:behavior];
+}
+
 RCT_EXPORT_METHOD(clearNotificationsFromNotificationCenter) {
     [[UNUserNotificationCenter currentNotificationCenter] removeAllDeliveredNotifications];
 }
