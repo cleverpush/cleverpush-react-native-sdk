@@ -1,3 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cleverpush.reactnative">
+
+    <application>
+        <meta-data
+            android:name="com.cleverpush.NotificationServiceExtension"
+            android:value="com.cleverpush.reactnative.RNCleverPush$RNNotificationServiceExtension" />
+    </application>
 </manifest>

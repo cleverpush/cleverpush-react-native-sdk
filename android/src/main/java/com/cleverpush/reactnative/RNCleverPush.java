@@ -16,7 +16,10 @@ import com.cleverpush.ChannelTopic;
 import com.cleverpush.CleverPush;
 import com.cleverpush.CustomAttribute;
 import com.cleverpush.Notification;
+import com.cleverpush.NotificationCategory;
 import com.cleverpush.NotificationOpenedResult;
+import com.cleverpush.NotificationReceivedEvent;
+import com.cleverpush.NotificationServiceExtension;
 import com.cleverpush.Subscription;
 import com.cleverpush.listener.DeviceTokenListener;
 import com.cleverpush.listener.NotificationReceivedCallbackListener;
@@ -37,10 +40,16 @@ import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.google.gson.Gson;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,9 +65,13 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     private boolean registeredEvents = false;
     private boolean showNotificationsInForeground = true;
     private boolean isAppInForeground = false;
+    private static final AtomicBoolean notificationHandlerEnabled = new AtomicBoolean(false);
+    private static final ConcurrentHashMap<String, PendingNotificationBehavior> pendingBehaviors = new ConcurrentHashMap<>();
+    private static WeakReference<RNCleverPush> moduleRef = new WeakReference<>(null);
 
     public RNCleverPush(ReactApplicationContext reactContext) {
         super(reactContext);
+        moduleRef = new WeakReference<>(this);
         mReactApplicationContext = reactContext;
         mReactContext = reactContext;
         mReactContext.addLifecycleEventListener(this);
@@ -627,6 +640,21 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
+    public void setNotificationHandlerEnabled(boolean enabled) {
+        notificationHandlerEnabled.set(enabled);
+    }
+
+    @ReactMethod
+    public void setNotificationBehavior(String requestId, ReadableMap behavior) {
+        PendingNotificationBehavior pending = pendingBehaviors.remove(requestId);
+        if (pending == null || !pending.completed.compareAndSet(false, true)) {
+            return;
+        }
+        applyBehavior(pending.notification, behavior);
+        pending.latch.countDown();
+    }
+
+    @ReactMethod
     public void clearNotificationsFromNotificationCenter() {
         try {
             NotificationManager notificationManager = (NotificationManager)
@@ -874,5 +902,131 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
 
     public boolean isAppOpen() {
         return isAppInForeground;
+    }
+
+    private boolean emitNotificationBehavior(String requestId, Notification notification, Subscription subscription) {
+        try {
+            if (mReactContext == null || !mReactContext.hasActiveCatalystInstance()) {
+                return false;
+            }
+            WritableMap result = new WritableNativeMap();
+            result.putString("id", requestId);
+            result.putMap("notification", notificationToWritableMap(notification));
+            if (subscription != null) {
+                WritableMap subscriptionMap = new WritableNativeMap();
+                subscriptionMap.putString("id", subscription.getId());
+                result.putMap("subscription", subscriptionMap);
+            }
+            sendEvent("CleverPush-notificationBehavior", result);
+            return true;
+        } catch (Exception exception) {
+            Log.e("CleverPush", "Failed to emit notification behavior request", exception);
+            return false;
+        }
+    }
+
+    private WritableMap notificationToWritableMap(Notification notification) {
+        WritableMap notificationMap = new WritableNativeMap();
+        if (notification == null) {
+            return notificationMap;
+        }
+        Gson gson = new Gson();
+        notificationMap.putString("id", notification.getId());
+        notificationMap.putString("title", notification.getTitle());
+        notificationMap.putString("text", notification.getText());
+        notificationMap.putString("url", notification.getUrl());
+        notificationMap.putString("iconUrl", notification.getIconUrl());
+        notificationMap.putString("mediaUrl", notification.getMediaUrl());
+        notificationMap.putString("tag", notification.getTag());
+        if (notification.getCustomData() != null) {
+            try {
+                JSONObject customDataJson = new JSONObject(gson.toJson(notification.getCustomData()));
+                WritableMap customDataMap = new WritableNativeMap();
+                Iterator<String> keys = customDataJson.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    customDataMap.putString(key, customDataJson.optString(key, ""));
+                }
+                notificationMap.putMap("customData", customDataMap);
+            } catch (JSONException exception) {
+                Log.e("CleverPush", "Failed to read notification customData", exception);
+            }
+        }
+        NotificationCategory category = notification.getCategory();
+        if (category != null) {
+            WritableMap categoryMap = new WritableNativeMap();
+            if (category.getId() != null) {
+                categoryMap.putString("id", category.getId());
+            }
+            if (category.getName() != null) {
+                categoryMap.putString("name", category.getName());
+            }
+            notificationMap.putMap("category", categoryMap);
+        }
+        notificationMap.putBoolean("chatNotification", notification.isChatNotification());
+        notificationMap.putBoolean("carouselEnabled", notification.isCarouselEnabled());
+        notificationMap.putBoolean("silent", notification.isSilent());
+        notificationMap.putString("createdAt", notification.getCreatedAt());
+        notificationMap.putString("appBanner", notification.getAppBanner());
+        return notificationMap;
+    }
+
+    private static void applyBehavior(Notification notification, ReadableMap behavior) {
+        if (notification == null) {
+            return;
+        }
+        if (behavior == null) {
+            return;
+        }
+        if (behavior.hasKey("shouldShowBanner") && !behavior.isNull("shouldShowBanner")) {
+            notification.setShouldShowBanner(behavior.getBoolean("shouldShowBanner"));
+        }
+        if (behavior.hasKey("shouldShowAlert") && !behavior.isNull("shouldShowAlert")) {
+            notification.setShouldShowAlert(behavior.getBoolean("shouldShowAlert"));
+        }
+        if (behavior.hasKey("shouldPlaySound") && !behavior.isNull("shouldPlaySound")) {
+            notification.setShouldPlaySound(behavior.getBoolean("shouldPlaySound"));
+        }
+    }
+
+    private static final class PendingNotificationBehavior {
+        final Notification notification;
+        final CountDownLatch latch = new CountDownLatch(1);
+        final AtomicBoolean completed = new AtomicBoolean(false);
+
+        PendingNotificationBehavior(Notification notification) {
+            this.notification = notification;
+        }
+    }
+
+    public static class RNNotificationServiceExtension implements NotificationServiceExtension {
+        @Override
+        public void onNotificationReceived(NotificationReceivedEvent event) {
+            if (!notificationHandlerEnabled.get() || event == null || event.getNotification() == null) {
+                return;
+            }
+
+            Notification notification = event.getNotification();
+            RNCleverPush module = moduleRef.get();
+            String requestId = UUID.randomUUID().toString();
+            PendingNotificationBehavior pending = new PendingNotificationBehavior(notification);
+            pendingBehaviors.put(requestId, pending);
+
+            boolean emitted = module != null && module.emitNotificationBehavior(requestId, notification, event.getSubscription());
+            if (!emitted) {
+                pendingBehaviors.remove(requestId);
+                return;
+            }
+
+            try {
+                pending.latch.await(3, TimeUnit.SECONDS);
+            } catch (InterruptedException exception) {
+                Thread.currentThread().interrupt();
+            }
+
+            if (pending.completed.compareAndSet(false, true)) {
+                pendingBehaviors.remove(requestId);
+            }
+        }
     }
 }

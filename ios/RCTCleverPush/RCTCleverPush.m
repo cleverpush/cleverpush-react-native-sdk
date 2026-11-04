@@ -25,11 +25,9 @@
 
 #endif
 
-@interface RCTCleverPush ()
-@end
-
 @implementation RCTCleverPush {
     BOOL didInitialize;
+    NSMutableDictionary *pendingBehaviorRequests;
 }
 
 CPNotificationOpenedResult* coldStartCPNotificationOpenedResult;
@@ -204,6 +202,104 @@ NSDictionary* pendingLaunchOptions;
 
 - (void)sendEvent:(NSString *)eventName withBody:(NSDictionary *)body {
     [RCTCleverPushEventEmitter sendEventWithName:eventName withBody:body];
+}
+
+- (void)setNotificationHandlerEnabled:(BOOL)enabled {
+    if (!enabled) {
+        [CleverPush setNotificationHandler:nil];
+        return;
+    }
+
+    __weak RCTCleverPush *weakSelf = self;
+    [CleverPush setNotificationHandler:^(CPNotification *notification, CPNotificationHandlerCompletionBlock completion) {
+        RCTCleverPush *strongSelf = weakSelf;
+        if (strongSelf == nil || completion == nil) {
+            if (completion) {
+                completion(nil);
+            }
+            return;
+        }
+
+        NSString *requestId = [[NSUUID UUID] UUIDString];
+        @synchronized (strongSelf) {
+            [strongSelf behaviorRequests][requestId] = [completion copy];
+        }
+
+        [strongSelf sendEvent:CPEventString(NotificationBehavior) withBody:@{
+            @"id": requestId,
+            @"notification": [strongSelf behaviorNotificationPayload:notification]
+        }];
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [strongSelf completeNotificationBehavior:requestId behavior:nil];
+        });
+    }];
+}
+
+- (NSDictionary *)behaviorNotificationPayload:(CPNotification *)notification {
+    NSMutableDictionary *payload = [NSMutableDictionary new];
+    if (notification.id != nil) {
+        payload[@"id"] = notification.id;
+    }
+    if (notification.title != nil) {
+        payload[@"title"] = notification.title;
+    }
+    if (notification.text != nil) {
+        payload[@"text"] = notification.text;
+    }
+    if (notification.url != nil) {
+        payload[@"url"] = notification.url;
+    }
+    if (notification.customData != nil) {
+        payload[@"customData"] = notification.customData;
+    }
+    payload[@"silent"] = @(notification.silent);
+    payload[@"chatNotification"] = @(notification.chatNotification);
+    return payload;
+}
+
+- (NSMutableDictionary *)behaviorRequests {
+    if (!pendingBehaviorRequests) {
+        pendingBehaviorRequests = [NSMutableDictionary new];
+    }
+    return pendingBehaviorRequests;
+}
+
+- (void)completeNotificationBehavior:(NSString *)requestId behavior:(NSDictionary *)behavior {
+    if (requestId == nil) {
+        return;
+    }
+
+    CPNotificationHandlerCompletionBlock completion;
+    @synchronized (self) {
+        completion = [self behaviorRequests][requestId];
+        if (completion) {
+            [[self behaviorRequests] removeObjectForKey:requestId];
+        }
+    }
+    if (!completion) {
+        return;
+    }
+
+    BOOL hasAlert = behavior[@"shouldShowAlert"] != nil && ![behavior[@"shouldShowAlert"] isKindOfClass:[NSNull class]];
+    BOOL hasSound = behavior[@"shouldPlaySound"] != nil && ![behavior[@"shouldPlaySound"] isKindOfClass:[NSNull class]];
+    BOOL hasBadge = behavior[@"shouldSetBadge"] != nil && ![behavior[@"shouldSetBadge"] isKindOfClass:[NSNull class]];
+    if (behavior == nil || (!hasAlert && !hasSound && !hasBadge)) {
+        completion(nil);
+        return;
+    }
+
+    CPNotificationBehavior *nativeBehavior = [CPNotificationBehavior new];
+    if (hasAlert) {
+        nativeBehavior.shouldShowAlert = [behavior[@"shouldShowAlert"] boolValue];
+    }
+    if (hasSound) {
+        nativeBehavior.shouldPlaySound = [behavior[@"shouldPlaySound"] boolValue];
+    }
+    if (hasBadge) {
+        nativeBehavior.shouldSetBadge = [behavior[@"shouldSetBadge"] boolValue];
+    }
+    completion(nativeBehavior);
 }
 
 @end
