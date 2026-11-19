@@ -66,6 +66,7 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     private boolean registeredEvents = false;
     private boolean showNotificationsInForeground = true;
     private boolean isAppInForeground = false;
+    private static final long JS_MAX_SAFE_INTEGER = (1L << 53) - 1;
     private static final AtomicBoolean notificationHandlerEnabled = new AtomicBoolean(false);
     private static final ConcurrentHashMap<String, PendingNotificationBehavior> pendingBehaviors = new ConcurrentHashMap<>();
     private static WeakReference<RNCleverPush> moduleRef = new WeakReference<>(null);
@@ -995,8 +996,10 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
             long longValue = (Long) value;
             if (longValue >= Integer.MIN_VALUE && longValue <= Integer.MAX_VALUE) {
                 map.putInt(key, (int) longValue);
-            } else {
+            } else if (longValue >= -JS_MAX_SAFE_INTEGER && longValue <= JS_MAX_SAFE_INTEGER) {
                 map.putDouble(key, longValue);
+            } else {
+                map.putString(key, Long.toString(longValue));
             }
         } else if (value instanceof Number) {
             map.putDouble(key, ((Number) value).doubleValue());
@@ -1023,8 +1026,10 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
                 long longValue = (Long) value;
                 if (longValue >= Integer.MIN_VALUE && longValue <= Integer.MAX_VALUE) {
                     array.pushInt((int) longValue);
-                } else {
+                } else if (longValue >= -JS_MAX_SAFE_INTEGER && longValue <= JS_MAX_SAFE_INTEGER) {
                     array.pushDouble(longValue);
+                } else {
+                    array.pushString(Long.toString(longValue));
                 }
             } else if (value instanceof Number) {
                 array.pushDouble(((Number) value).doubleValue());
