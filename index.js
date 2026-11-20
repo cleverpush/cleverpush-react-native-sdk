@@ -17,9 +17,58 @@ var _eventNames = ['received', 'opened', 'appBannerOpened', 'subscribed'];
 var _notificationHandler = new Map();
 var _notificationCache = new Map();
 var _listeners = [];
+var _notificationBehaviorHandler = null;
+
+function normalizeNotificationBehavior(behavior) {
+  var result = {};
+
+  if (!behavior || typeof behavior !== 'object') {
+    return result;
+  }
+
+  if (typeof behavior.shouldShowBanner === 'boolean') {
+    result.shouldShowBanner = behavior.shouldShowBanner;
+  }
+  if (typeof behavior.shouldShowAlert === 'boolean') {
+    result.shouldShowAlert = behavior.shouldShowAlert;
+  }
+  if (typeof behavior.shouldPlaySound === 'boolean') {
+    result.shouldPlaySound = behavior.shouldPlaySound;
+  }
+  if (typeof behavior.shouldSetBadge === 'boolean') {
+    result.shouldSetBadge = behavior.shouldSetBadge;
+  }
+
+  return result;
+}
+
+function handleNotificationBehaviorRequest(request) {
+  if (!request || !request.id || RNCleverPush == null) {
+    return;
+  }
+
+  var handler = _notificationBehaviorHandler;
+  if (!handler || typeof handler.handleNotification !== 'function') {
+    RNCleverPush.setNotificationBehavior(request.id, null);
+    return;
+  }
+
+  Promise.resolve()
+    .then(function () {
+      return handler.handleNotification(request);
+    })
+    .then(function (behavior) {
+      RNCleverPush.setNotificationBehavior(request.id, normalizeNotificationBehavior(behavior));
+    })
+    .catch(function () {
+      RNCleverPush.setNotificationBehavior(request.id, null);
+    });
+}
 
 if (RNCleverPush != null) {
   CleverPushEventEmitter = new NativeEventEmitter(RNCleverPush);
+
+  CleverPushEventEmitter.addListener('CleverPush-notificationBehavior', handleNotificationBehaviorRequest);
 
   for (var i = 0; i < eventBroadcastNames.length; i++) {
     var eventBroadcastName = eventBroadcastNames[i];
@@ -278,6 +327,14 @@ export default class CleverPush {
     if (!checkIfInitialized()) return;
 
     RNCleverPush.setShowNotificationsInForeground(show);
+  }
+
+  static setNotificationHandler(handler) {
+    if (!checkIfInitialized()) return;
+
+    _notificationBehaviorHandler = handler;
+    var enabled = !!(handler && typeof handler.handleNotification === 'function');
+    RNCleverPush.setNotificationHandlerEnabled(enabled);
   }
 
   // iOS only

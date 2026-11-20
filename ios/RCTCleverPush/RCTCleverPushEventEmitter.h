@@ -16,10 +16,11 @@ typedef NS_ENUM(NSInteger, CPNotificationEventTypes) {
     NotificationReceived,
     NotificationOpened,
     AppBannerOpened,
-    Subscribed
+    Subscribed,
+    NotificationBehavior
 };
 
-#define CPNotificationEventTypesArray @[@"CleverPush-notificationReceived",@"CleverPush-notificationOpened",@"CleverPush-appBannerOpened",@"CleverPush-subscribed"]
+#define CPNotificationEventTypesArray @[@"CleverPush-notificationReceived",@"CleverPush-notificationOpened",@"CleverPush-appBannerOpened",@"CleverPush-subscribed",@"CleverPush-notificationBehavior"]
 #define CPEventString(enum) [CPNotificationEventTypesArray objectAtIndex:enum]
 
 @interface RCTCleverPushEventEmitter : RCTEventEmitter <RCTBridgeModule>
