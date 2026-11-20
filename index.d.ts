@@ -81,7 +81,7 @@ declare module 'cleverpush-react-native' {
 	};
 
 	export interface NotificationBehavior {
-		/** false hides the notification. On iOS this also hides the banner and the notification list. */
+		/** iOS: false hides the banner and the notification list only. Sound and badge still apply unless shouldPlaySound / shouldSetBadge are also false. */
 		shouldShowAlert?: boolean;
 		/** Android only. false keeps the notification in the shade without a heads-up popup. */
 		shouldShowBanner?: boolean;

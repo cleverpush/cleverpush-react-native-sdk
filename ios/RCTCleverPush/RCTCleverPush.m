@@ -250,12 +250,49 @@ NSDictionary* pendingLaunchOptions;
     if (notification.url != nil) {
         payload[@"url"] = notification.url;
     }
+    if (notification.iconUrl != nil) {
+        payload[@"iconUrl"] = notification.iconUrl;
+    }
+    if (notification.mediaUrl != nil) {
+        payload[@"mediaUrl"] = notification.mediaUrl;
+    }
+    if (notification.tag != nil) {
+        payload[@"tag"] = notification.tag;
+    }
+    NSArray *actions = [self jsonArrayWithObject:notification.actions];
+    if (actions != nil) {
+        payload[@"actions"] = actions;
+    }
     if (notification.customData != nil) {
         payload[@"customData"] = notification.customData;
     }
-    payload[@"silent"] = @(notification.silent);
     payload[@"chatNotification"] = @(notification.chatNotification);
+    payload[@"carouselEnabled"] = @(notification.carouselEnabled);
+    NSArray *carouselItems = [self jsonArrayWithObject:notification.carouselItems];
+    if (carouselItems != nil) {
+        payload[@"carouselItems"] = carouselItems;
+    }
+    if (notification.soundFilename != nil) {
+        payload[@"soundFilename"] = notification.soundFilename;
+    }
+    payload[@"silent"] = @(notification.silent);
+    if (notification.createdAt != nil) {
+        payload[@"createdAt"] = [NSString stringWithFormat:@"%@", notification.createdAt];
+    }
+    if (notification.appBanner != nil) {
+        payload[@"appBanner"] = notification.appBanner;
+    }
+    if (notification.inboxAppBanner != nil) {
+        payload[@"inboxAppBanner"] = notification.inboxAppBanner;
+    }
     return payload;
+}
+
+- (NSArray *)jsonArrayWithObject:(id)object {
+    if (![object isKindOfClass:[NSArray class]] || ![NSJSONSerialization isValidJSONObject:object]) {
+        return nil;
+    }
+    return object;
 }
 
 - (NSMutableDictionary *)behaviorRequests {
