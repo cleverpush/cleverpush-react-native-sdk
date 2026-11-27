@@ -160,8 +160,23 @@ RCT_EXPORT_METHOD(removeSubscriptionTopic:(NSString *)topicId) {
     [CleverPush removeSubscriptionTopic:topicId];
 }
 
-RCT_EXPORT_METHOD(setSubscriptionTopics:(NSArray *)topicIds) {
-    [CleverPush setSubscriptionTopics:topicIds];
+RCT_EXPORT_METHOD(setSubscriptionTopics:(NSArray *)topicIds callback:(RCTResponseSenderBlock)callback) {
+    if (topicIds == nil) {
+        if (callback) {
+            callback(@[@"topicIds must not be null"]);
+        }
+        return;
+    }
+    NSMutableArray *topics = [topicIds mutableCopy];
+    [CleverPush setSubscriptionTopics:topics onSuccess:^{
+        if (callback) {
+            callback(@[[NSNull null]]);
+        }
+    } onFailure:^(NSError *error) {
+        if (callback) {
+            callback(@[error.localizedDescription ?: @"setSubscriptionTopics failed"]);
+        }
+    }];
 }
 
 RCT_EXPORT_METHOD(setSubscriptionAttribute:(NSString *)attributeId value:(NSString*)value) {

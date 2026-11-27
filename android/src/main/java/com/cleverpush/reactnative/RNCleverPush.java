@@ -18,6 +18,7 @@ import com.cleverpush.CustomAttribute;
 import com.cleverpush.Notification;
 import com.cleverpush.NotificationOpenedResult;
 import com.cleverpush.Subscription;
+import com.cleverpush.listener.CompletionFailureListener;
 import com.cleverpush.listener.DeviceTokenListener;
 import com.cleverpush.listener.NotificationReceivedCallbackListener;
 import com.cleverpush.listener.SubscribedListener;
@@ -305,15 +306,35 @@ public class RNCleverPush extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     @ReactMethod
-    public void setSubscriptionTopics(ReadableArray topicIdsReadableArray) {
+    public void setSubscriptionTopics(ReadableArray topicIdsReadableArray, final Callback callback) {
         if (this.cleverPush == null) {
+            if (callback != null) {
+                callback.invoke("CleverPush is not initialized");
+            }
             return;
         }
         String[] topicIds = new String[topicIdsReadableArray.size()];
         for (int i = 0; i < topicIdsReadableArray.size(); i++) {
             topicIds[i] = topicIdsReadableArray.getString(i);
         }
-        this.cleverPush.setSubscriptionTopics(topicIds);
+        this.cleverPush.setSubscriptionTopics(topicIds, new CompletionFailureListener() {
+            @Override
+            public void onComplete() {
+                if (callback != null) {
+                    callback.invoke((Object) null);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                if (callback != null) {
+                    String message = exception != null && exception.getMessage() != null
+                            ? exception.getMessage()
+                            : "setSubscriptionTopics failed";
+                    callback.invoke(message);
+                }
+            }
+        });
     }
 
     @ReactMethod

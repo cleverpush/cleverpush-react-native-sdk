@@ -57,7 +57,7 @@ declare module 'cleverpush-react-native' {
 		static getSubscriptionAttribute(attributeId: string, callback: (error, attributeValue: string) => void): void;
 		static getSubscriptionTopics(callback: (error, topics: string[]) => void): void;
 		static getAvailableTopics(callback: (error, channelTopics: Topic[]) => void): void;
-		static setSubscriptionTopics(topicIds: string[]): void;
+		static setSubscriptionTopics(topicIds: string[], callback?: (error) => void): void;
 		static addSubscriptionTopic(topicId: string): void;
 		static removeSubscriptionTopic(topicId: string): void;
 		static trackEvent(url: string, properties: Record<string, any>): void;

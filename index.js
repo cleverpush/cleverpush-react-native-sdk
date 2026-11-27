@@ -1,4 +1,4 @@
-import { NativeModules, NativeEventEmitter, NetInfo, Platform } from 'react-native';
+import { NativeModules, NativeEventEmitter, NetInfo } from 'react-native';
 import invariant from 'invariant';
 
 const RNCleverPush = NativeModules.CleverPush;
@@ -136,10 +136,10 @@ export default class CleverPush {
     RNCleverPush.getSubscriptionTopics(callback);
   }
 
-  static setSubscriptionTopics(topicIds) {
+  static setSubscriptionTopics(topicIds, callback) {
     if (!checkIfInitialized()) return;
 
-    RNCleverPush.setSubscriptionTopics(topicIds);
+    RNCleverPush.setSubscriptionTopics(topicIds, typeof callback === 'function' ? callback : () => {});
   }
 
   static addSubscriptionTopic(topicId) {
