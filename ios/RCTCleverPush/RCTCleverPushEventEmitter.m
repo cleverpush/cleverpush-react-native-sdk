@@ -161,7 +161,13 @@ RCT_EXPORT_METHOD(removeSubscriptionTopic:(NSString *)topicId) {
 }
 
 RCT_EXPORT_METHOD(setSubscriptionTopics:(NSArray *)topicIds callback:(RCTResponseSenderBlock)callback) {
-    NSMutableArray *topics = topicIds ? [topicIds mutableCopy] : [NSMutableArray array];
+    if (topicIds == nil) {
+        if (callback) {
+            callback(@[@"topicIds must not be null"]);
+        }
+        return;
+    }
+    NSMutableArray *topics = [topicIds mutableCopy];
     [CleverPush setSubscriptionTopics:topics onSuccess:^{
         if (callback) {
             callback(@[[NSNull null]]);
